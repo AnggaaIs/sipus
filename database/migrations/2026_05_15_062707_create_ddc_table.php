@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fines', function (Blueprint $table) {
+        Schema::create('ddcs', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 3)->unique();
+            $table->string('name');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fines');
+        Schema::dropIfExists('ddcs');
     }
 };

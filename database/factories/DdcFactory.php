@@ -2,27 +2,28 @@
 
 namespace Database\Factories;
 
-use App\Models\Category;
+use App\Models\Ddc;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Category>
+ * @extends Factory<Ddc>
  */
-class CategoryFactory extends Factory
+class DdcFactory extends Factory
 {
     /**
+     * Define the model's default state.
+     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
-        $name = Str::title(fake()->unique()->words(rand(1, 2), true));
+        $code = str_pad((string) fake()->unique()->numberBetween(0, 999), 3, '0', STR_PAD_LEFT);
 
         return [
-            'name' => $name,
-            'slug' => Str::slug($name) . '-' . fake()->unique()->numerify('##'),
+            'code' => $code,
+            'name' => Str::title(fake()->words(rand(2, 4), true)),
             'description' => fake()->optional()->sentence(),
-            'color' => fake()->hexColor(),
         ];
     }
 }

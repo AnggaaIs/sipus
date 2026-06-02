@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68b6036c3cac674aa25e8eb605656d63",
+    "content-hash": "beb2a0c45aa9d0d84768527217a2d38a",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
