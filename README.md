@@ -1,58 +1,151 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/sepang_sma_logo.png" alt="Logo SMA Semen Padang" width="120">
 </p>
 
-## About Laravel
+<h1 align="center">SIPUS</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <strong>Sistem Informasi Perpustakaan SMA Semen Padang</strong>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Deskripsi Proyek
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+SIPUS adalah aplikasi berbasis web yang membantu digitalisasi layanan
+perpustakaan SMA Semen Padang. Aplikasi ini menyediakan katalog buku yang
+dapat diakses oleh pengguna serta panel administrasi untuk mengelola koleksi,
+kategori, peminjaman, pengembalian, dan denda secara terpusat.
 
-## Learning Laravel
+SIPUS dikembangkan untuk mempermudah pencarian buku, meningkatkan efisiensi
+pengelolaan data perpustakaan, dan mendukung budaya literasi di lingkungan
+sekolah.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Fitur Utama
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Beranda yang menampilkan koleksi buku terbaru.
+- Katalog buku dengan pencarian berdasarkan judul, penulis, ISBN, dan DDC.
+- Filter koleksi berdasarkan klasifikasi DDC.
+- Informasi ketersediaan dan jumlah eksemplar buku.
+- Registrasi dan autentikasi pengguna.
+- Panel administrasi berbasis Filament.
+- Pengelolaan data buku dan kategori.
+- Pengelolaan transaksi peminjaman dan pengembalian buku.
+- Pengelolaan denda keterlambatan.
+- Manajemen data pengguna dengan peran admin dan siswa.
+- Antarmuka responsif untuk perangkat desktop dan mobile.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Teknologi yang Digunakan
 
-## Agentic Development
+| Teknologi | Kegunaan |
+| --- | --- |
+| PHP 8.3+ | Bahasa pemrograman backend |
+| Laravel 13 | Framework utama aplikasi |
+| Filament 5 | Panel administrasi |
+| Livewire 4 | Komponen antarmuka reaktif |
+| Alpine.js 3 | Interaksi ringan pada sisi pengguna |
+| Tailwind CSS 4 | Styling antarmuka |
+| Vite 8 | Build tool aset frontend |
+| MySQL | Basis data aplikasi |
+| Pest 4 | Pengujian aplikasi |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalasi Singkat
 
-```bash
-composer require laravel/boost --dev
+### Prasyarat
 
-php artisan boost:install
-```
+Pastikan perangkat sudah memiliki:
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+- PHP 8.3 atau lebih baru
+- Composer
+- Node.js dan npm
+- MySQL
 
-## Contributing
+### Langkah Instalasi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Clone repositori dan masuk ke direktori proyek.
 
-## Code of Conduct
+   ```bash
+   git clone <url-repositori>
+   cd sipus
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Instal dependensi backend dan frontend.
 
-## Security Vulnerabilities
+   ```bash
+   composer install
+   npm install
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. Salin berkas konfigurasi lingkungan dan buat application key.
 
-## License
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. Buat database MySQL bernama `sipus`, kemudian sesuaikan konfigurasi
+   database pada berkas `.env`.
+
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=sipus
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. Jalankan migrasi dan seeder.
+
+   ```bash
+   php artisan migrate --seed
+   ```
+
+6. Build aset frontend.
+
+   ```bash
+   npm run build
+   ```
+
+7. Jalankan aplikasi.
+
+   ```bash
+   composer run dev
+   ```
+
+Aplikasi dapat dibuka melalui `http://localhost:8000`, sedangkan panel admin
+tersedia di `http://localhost:8000/admin`.
+
+### Akun Admin Default
+
+| Email | Password |
+| --- | --- |
+| `admin@sipus.com` | `password` |
+
+> Akun di atas berasal dari seeder dan hanya ditujukan untuk lingkungan
+> pengembangan. Ganti kredensial sebelum aplikasi digunakan pada lingkungan
+> produksi.
+
+## Screenshot Proyek
+
+### Halaman Utama
+
+![Perpustakaan SMA Semen Padang](public/images/Perpustakaan.jpg)
+
+### Halaman Autentikasi
+
+![SMA Semen Padang](public/images/Login.jpg)
+
+## Tim Pengembang
+
+| Nama | NIM |
+| --- | --- |
+| Angga Islami Pasya | 2411081004 |
+| Ihza Mahendra | 2411082009 |
+| Inayah Henni El Najla | 2411081010 |
+| Alya Dhiya Najla | 2411081003 |
+
+---
+
+<p align="center">
+  Dikembangkan untuk mendukung pengelolaan perpustakaan dan budaya literasi
+  di SMA Semen Padang.
+</p>
