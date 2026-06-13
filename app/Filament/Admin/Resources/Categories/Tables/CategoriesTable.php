@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Categories\Tables;
 
-
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,10 +14,15 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
                 TextColumn::make('name')
+                    ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('description'),
+                TextColumn::make('color')
+                    ->label('Warna')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -28,6 +32,7 @@ class CategoriesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('updated_at', 'desc')
             ->filters([
                 //
             ])
