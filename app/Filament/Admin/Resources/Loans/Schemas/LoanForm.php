@@ -23,7 +23,7 @@ class LoanForm
                     ->relationship(
                         'user',
                         'full_name',
-                        fn (Builder $query): Builder => $query
+                        fn(Builder $query): Builder => $query
                             ->where('role', 'user')
                             ->where('account_status', 'active')
                             ->where('is_active', true),
@@ -33,7 +33,7 @@ class LoanForm
                     ->required(),
                 TextInput::make('loan_code')
                     ->label('Kode peminjaman')
-                    ->default(fn (): string => 'SIPUS-'.now()->format('Ymd').'-'.Str::upper(Str::random(5)))
+                    ->default(fn(): string => 'SIPUS-' . now()->format('Ymd') . '-' . Str::upper(Str::random(5)))
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
@@ -64,7 +64,7 @@ class LoanForm
                             ->relationship(
                                 'book',
                                 'title',
-                                fn (Builder $query): Builder => $query->where('available_copies', '>', 0),
+                                fn(Builder $query): Builder => $query->where('available_copies', '>', 0),
                             )
                             ->searchable()
                             ->preload()

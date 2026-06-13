@@ -19,7 +19,7 @@ class FineResource extends Resource
 {
     protected static ?string $model = Fine::class;
 
-        protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     protected static string|UnitEnum|null $navigationGroup = 'Sirkulasi';
 
