@@ -8,6 +8,12 @@
   <strong>Sistem Informasi Perpustakaan SMA Semen Padang</strong>
 </p>
 
+<p align="center">
+  <a href="https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml">
+    <img src="https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+</p>
+
 ## Deskripsi Proyek
 
 SIPUS adalah aplikasi berbasis web yang membantu digitalisasi layanan
@@ -19,18 +25,22 @@ SIPUS dikembangkan untuk mempermudah pencarian buku, meningkatkan efisiensi
 pengelolaan data perpustakaan, dan mendukung budaya literasi di lingkungan
 sekolah.
 
+Target pengguna SIPUS adalah petugas/admin perpustakaan, siswa SMA Semen
+Padang, dan pengunjung yang ingin melihat katalog buku.
+
 ## Fitur Utama
 
 - Beranda yang menampilkan koleksi buku terbaru.
 - Katalog buku dengan pencarian berdasarkan judul, penulis, ISBN, dan DDC.
 - Filter koleksi berdasarkan klasifikasi DDC.
 - Informasi ketersediaan dan jumlah eksemplar buku.
-- Registrasi dan autentikasi pengguna.
-- Panel administrasi berbasis Filament.
-- Pengelolaan data buku dan kategori.
-- Pengelolaan transaksi peminjaman dan pengembalian buku.
+- Login menggunakan email atau NISN dan registrasi akun dengan persetujuan admin.
+- Pemisahan akses panel admin dan panel user.
+- Panel administrasi berbasis Filament dengan mode SPA.
+- CRUD buku, kategori, DDC, pengguna, peminjaman, dan denda.
 - Pengelolaan denda keterlambatan.
-- Manajemen data pengguna dengan peran admin dan siswa.
+- Manajemen persetujuan akun pengguna.
+- Authorization menggunakan Laravel Model Policy.
 - Antarmuka responsif untuk perangkat desktop dan mobile.
 
 ## Teknologi yang Digunakan
@@ -63,7 +73,7 @@ Pastikan perangkat sudah memiliki:
 1. Clone repositori dan masuk ke direktori proyek.
 
    ```bash
-   git clone <url-repositori>
+   git clone https://github.com/AnggaaIs/sipus.git
    cd sipus
    ```
 
@@ -112,13 +122,15 @@ Pastikan perangkat sudah memiliki:
    ```
 
 Aplikasi dapat dibuka melalui `http://localhost:8000`, sedangkan panel admin
-tersedia di `http://localhost:8000/admin`.
+tersedia di `http://localhost:8000/admin` dan panel user di
+`http://localhost:8000/user`.
 
-### Akun Admin Default
+### Akun Pengembangan
 
-| Email | Password |
-| --- | --- |
-| `admin@sipus.com` | `password` |
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@sipus.com` | `password` |
+| User | `john.doe@sipus.com` | `password` |
 
 > Akun di atas berasal dari seeder dan hanya ditujukan untuk lingkungan
 > pengembangan. Ganti kredensial sebelum aplikasi digunakan pada lingkungan
@@ -133,6 +145,32 @@ tersedia di `http://localhost:8000/admin`.
 ### Halaman Autentikasi
 
 ![SMA Semen Padang](public/images/Login.jpg)
+
+### Dashboard Admin
+
+![Dashboard admin SIPUS](public/images/dashboard-admin.png)
+
+### CRUD Buku
+
+![CRUD buku SIPUS](public/images/crud-buku.png)
+
+## Dokumentasi
+
+| Dokumen | Isi |
+| --- | --- |
+| [Panduan instalasi](docs/installation.md) | Persyaratan, setup, test, dan troubleshooting |
+| [Dokumentasi fitur](docs/features.md) | Aktor, alur, route, controller, dan screenshot |
+| [Dokumentasi dependency](docs/dependency.md) | Package, versi, fungsi, dampak, dan risiko |
+| [Dokumentasi refactoring](docs/refactoring.md) | Masalah, perubahan, alasan, dampak, dan bukti commit |
+| [Dokumentasi GitHub Actions](docs/github-actions.md) | Trigger, tahapan CI, hasil, dan pengembangan lanjutan |
+| [Changelog](CHANGELOG.md) | Riwayat perubahan dan evolusi proyek |
+
+## Menjalankan Verifikasi
+
+```bash
+npm run build
+php artisan test --compact
+```
 
 ## Tim Pengembang
 

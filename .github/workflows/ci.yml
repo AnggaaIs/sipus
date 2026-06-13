@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - angga
+      - naya
+      - ihza
+      - alya
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    env:
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ${{ github.workspace }}/database/database.sqlite
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, fileinfo, intl, pdo_sqlite, sqlite3
+          coverage: none
+          tools: composer:v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Validate Composer configuration
+        run: composer validate --no-check-publish
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Audit PHP dependencies
+        run: composer audit --locked --no-interaction
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Audit frontend dependencies
+        run: npm audit --audit-level=high
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --force
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Verify production caches
+        run: php artisan optimize
+
+      - name: Run tests
+        env:
+          PAO_DISABLE: '1'
+        run: vendor/bin/pest --ci
