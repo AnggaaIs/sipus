@@ -2,144 +2,98 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'name',
+    'full_name',
+    'nisn',
     'email',
     'password',
-    'nis',
     'role',
-    'is_approved',
-    'photo',
+    'account_status',
+    'rejection_reason',
+    'approved_at',
+    'approved_by',
+    'class',
+    'phone',
+    'avatar',
+    'is_active',
 ])]
+#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $fillable = [];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected function casts(): array
+    public function approvedBy(): BelongsTo
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_approved'       => 'boolean',
-        ];
+        return $this->belongsTo(self::class, 'approved_by');
     }
 
-    // ==========================================
-    // FILAMENT
-    // ==========================================
-
-    // Hanya admin yang boleh akses panel Filament
-    public function canAccessPanel(Panel $panel): bool
+    public function approvedUsers(): HasMany
     {
-        return $this->role === 'admin';
+        return $this->hasMany(self::class, 'approved_by');
     }
 
-    // ==========================================
-    // RELASI
-    // ==========================================
-
-    // Siswa memiliki banyak riwayat peminjaman
-    public function borrows()
+    public function loans(): HasMany
     {
-        return $this->hasMany(Borrow::class, 'user_id');
+        return $this->hasMany(Loan::class);
     }
 
-    // Peminjaman yang masih aktif milik siswa
-    public function activeBorrows()
+    public function fines(): HasMany
     {
-        return $this->hasMany(Borrow::class, 'user_id')
-            ->where('status', 'dipinjam');
+        return $this->hasMany(Fine::class);
     }
 
-    // ==========================================
-    // HELPER METHOD
-    // ==========================================
-
-    // Cek apakah user adalah admin
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    // Cek apakah user adalah siswa
-    public function isSiswa(): bool
+    public function isMember(): bool
     {
-        return $this->role === 'siswa';
+        return $this->role === 'user';
     }
 
-    // Cek apakah siswa sudah diapprove
     public function isApproved(): bool
     {
-        return $this->is_approved === true;
+        return $this->account_status === 'active';
     }
 
-    // Cek apakah siswa masih punya pinjaman aktif
-    public function hasBorrows(): bool
+    public function canBorrowBooks(): bool
     {
-        return $this->activeBorrows()->exists();
+        return $this->isMember() && $this->isApproved() && $this->is_active;
     }
 
-    // Cek apakah siswa punya denda belum lunas
-    public function hasUnpaidFines(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        return $this->borrows()
-            ->whereHas('fine', fn($q) => $q->where('is_paid', false))
-            ->exists();
+        return match ($panel->getId()) {
+            'admin' => $this->isAdmin() && $this->isApproved() && $this->is_active,
+            'user' => $this->canBorrowBooks(),
+            default => false,
+        };
     }
 
-    // ==========================================
-    // ACCESSOR
-    // ==========================================
-
-    // URL foto profil
-    public function getPhotoUrlAttribute(): string
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->photo
-            ? asset('storage/' . $this->photo)
-            : asset('images/default-avatar.png');
-    }
-
-    // ==========================================
-    // SCOPE
-    // ==========================================
-
-    // Filter semua siswa
-    public function scopeSiswa($query)
-    {
-        return $query->where('role', 'siswa');
-    }
-
-    // Filter siswa yang sudah diapprove
-    public function scopeApproved($query)
-    {
-        return $query->where('role', 'siswa')
-            ->where('is_approved', true);
-    }
-
-    // Filter siswa yang belum diapprove (UC-17)
-    public function scopePending($query)
-    {
-        return $query->where('role', 'siswa')
-            ->where('is_approved', false);
-    }
-
-    // Filter semua admin
-    public function scopeAdmin($query)
-    {
-        return $query->where('role', 'admin');
+        return [
+            'approved_at' => 'datetime',
+            'email_verified_at' => 'datetime',
+            'is_active' => 'boolean',
+            'password' => 'hashed',
+        ];
     }
 }
