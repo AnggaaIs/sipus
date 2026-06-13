@@ -26,9 +26,11 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/app.css')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
             ])
+            ->spa()
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
