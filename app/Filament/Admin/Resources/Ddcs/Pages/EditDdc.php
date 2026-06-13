@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Returns\Pages;
+namespace App\Filament\Admin\Resources\Ddcs\Pages;
 
-use App\Filament\Admin\Resources\Returns\ReturnsResource;
+use App\Filament\Admin\Resources\Ddcs\DdcResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditReturns extends EditRecord
+class EditDdc extends EditRecord
 {
-    protected static string $resource = ReturnsResource::class;
+    protected static string $resource = DdcResource::class;
 
     protected function getHeaderActions(): array
     {

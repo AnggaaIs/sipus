@@ -18,6 +18,13 @@ class UserSeeder extends Seeder
             'password'  => Hash::make('password'),
         ]);
 
+        User::factory()->member()->create([
+            'name'      => 'John Doe',
+            'full_name' => 'Johnathan Doe',
+            'email'     => 'john.doe@sipus.com',
+            'password'  => Hash::make('password'),
+        ]);
+
         // Buat 20 siswa yang sudah approved
         User::factory(20)->member()->create();
 

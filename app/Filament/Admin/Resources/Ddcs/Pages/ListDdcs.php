@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Returns\Pages;
+namespace App\Filament\Admin\Resources\Ddcs\Pages;
 
-use App\Filament\Admin\Resources\Returns\ReturnsResource;
+use App\Filament\Admin\Resources\Ddcs\DdcResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
-class ListReturns extends ListRecords
+class ListDdcs extends ListRecords
 {
-    protected static string $resource = ReturnsResource::class;
+    protected static string $resource = DdcResource::class;
 
     protected function getHeaderActions(): array
     {

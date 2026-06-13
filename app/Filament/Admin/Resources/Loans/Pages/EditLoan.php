@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Borrows\Pages;
+namespace App\Filament\Admin\Resources\Loans\Pages;
 
-use App\Filament\Admin\Resources\Borrows\BorrowResource;
+use App\Filament\Admin\Resources\Loans\LoanResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
-class EditBorrow extends EditRecord
+class EditLoan extends EditRecord
 {
-    protected static string $resource = BorrowResource::class;
+    protected static string $resource = LoanResource::class;
 
     protected function getHeaderActions(): array
     {
