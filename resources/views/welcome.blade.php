@@ -1,14 +1,14 @@
 <x-layouts.guest title="SIPUS - Sistem Informasi Perpustakaan">
 
     {{-- HERO SECTION --}}
-    <section class="relative overflow-hidden bg-gradient-to-br from-primary to-secondary py-32">
+    <section class="relative overflow-hidden bg-gradient-to-br from-black to-gray py-32">
 
         {{-- Background Image --}}
         <div class="absolute inset-0">
             <img
                 src="{{ asset('images/Perpustakaan.jpg') }}"
                 alt="Perpustakaan"
-                class="h-full w-full object-cover opacity-15">
+                class="h-full w-full object-cover opacity-30" />
         </div>
 
         {{-- Decorative Blur --}}

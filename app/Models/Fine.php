@@ -2,95 +2,46 @@
 
 namespace App\Models;
 
+use Database\Factories\FineFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
-    'borrow_id',
-    'days_late',
-    'amount',
-    'is_paid',
+    'loan_id',
+    'user_id',
+    'overdue_days',
+    'amount_per_day',
+    'total_amount',
+    'status',
     'paid_at',
 ])]
 class Fine extends Model
 {
+    /** @use HasFactory<FineFactory> */
     use HasFactory;
 
+    public function loan(): BelongsTo
+    {
+        return $this->belongsTo(Loan::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
-            'is_paid' => 'boolean',
-            'paid_at' => 'date',
+            'amount_per_day' => 'decimal:2',
+            'overdue_days' => 'integer',
+            'paid_at' => 'datetime',
+            'total_amount' => 'decimal:2',
         ];
-    }
-
-    // Denda milik satu peminjaman
-    public function borrow()
-    {
-        return $this->belongsTo(Borrow::class);
-    }
-
-    // Lewat borrow, bisa akses data siswa
-    public function user()
-    {
-        return $this->borrow->user;
-    }
-
-    // Lewat borrow, bisa akses data buku
-    public function book()
-    {
-        return $this->borrow->book;
-    }
-
-    // ==========================================
-    // ACCESSOR
-    // ==========================================
-
-    // Format nominal denda ke Rupiah
-    public function getFormattedAmountAttribute(): string
-    {
-        return 'Rp ' . number_format($this->amount, 0, ',', '.');
-    }
-
-    // Label status denda
-    public function getStatusLabelAttribute(): string
-    {
-        return $this->is_paid ? 'Lunas' : 'Belum Lunas';
-    }
-
-    // Warna status untuk badge di tampilan
-    public function getStatusColorAttribute(): string
-    {
-        return $this->is_paid ? 'green' : 'red';
-    }
-
-    // ==========================================
-    // SCOPE
-    // ==========================================
-
-    // Filter denda yang belum dibayar
-    public function scopeUnpaid($query)
-    {
-        return $query->where('is_paid', false);
-    }
-
-    // Filter denda yang sudah dibayar
-    public function scopePaid($query)
-    {
-        return $query->where('is_paid', true);
-    }
-
-    // ==========================================
-    // HELPER METHOD
-    // ==========================================
-
-    // Tandai denda sudah lunas
-    public function markAsPaid(): void
-    {
-        $this->update([
-            'is_paid' => true,
-            'paid_at' => now(),
-        ]);
     }
 }
