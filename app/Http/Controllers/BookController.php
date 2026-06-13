@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\book;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -34,15 +34,15 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(book $book)
+    public function show(Book $book)
     {
-        //
+        return view('books.show', compact('book'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(book $book)
+    public function edit(Book $book)
     {
         //
     }
@@ -50,7 +50,7 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, book $book)
+    public function update(Request $request, Book $book)
     {
         //
     }
@@ -58,7 +58,7 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(book $book)
+    public function destroy(Book $book)
     {
         //
     }

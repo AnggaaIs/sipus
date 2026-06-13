@@ -10,42 +10,18 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Buat akun admin default
-        User::create([
-            'name'        => 'Admin SIPUS',
-            'email'       => 'admin@sipus.com',
-            'password'    => Hash::make('password'),
-            'role'        => 'admin',
-            'is_approved' => true,
+        // Buat 1 admin tetap supaya bisa login
+        User::factory()->admin()->create([
+            'name'      => 'Admin SIPUS',
+            'full_name' => 'Administrator SIPUS',
+            'email'     => 'admin@sipus.com',
+            'password'  => Hash::make('password'),
         ]);
 
-        // Buat beberapa dummy siswa untuk testing
-        User::create([
-            'name'        => 'Budi Santoso',
-            'email'       => 'budi@siswa.com',
-            'password'    => Hash::make('password'),
-            'nis'         => '2021001',
-            'role'        => 'siswa',
-            'is_approved' => true,
-        ]);
+        // Buat 20 siswa yang sudah approved
+        User::factory(20)->member()->create();
 
-        User::create([
-            'name'        => 'Siti Rahayu',
-            'email'       => 'siti@siswa.com',
-            'password'    => Hash::make('password'),
-            'nis'         => '2021002',
-            'role'        => 'siswa',
-            'is_approved' => true,
-        ]);
-
-        // Siswa yang belum diapprove (untuk testing UC-17)
-        User::create([
-            'name'        => 'Andi Pratama',
-            'email'       => 'andi@siswa.com',
-            'password'    => Hash::make('password'),
-            'nis'         => '2021003',
-            'role'        => 'siswa',
-            'is_approved' => false,
-        ]);
+        // Buat 5 siswa yang masih pending approval (testing UC-17)
+        User::factory(5)->pendingApproval()->create();
     }
 }

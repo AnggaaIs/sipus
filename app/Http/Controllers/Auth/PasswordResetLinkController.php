@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class NewPasswordController extends Controller
+class PasswordResetLinkController extends Controller
 {
-    public function create(string $token)
+    public function create()
     {
         return redirect()->route('login')->with('status', 'Reset password belum tersedia.');
     }
