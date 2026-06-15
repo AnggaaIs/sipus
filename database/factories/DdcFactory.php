@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Ddc;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Ddc>
@@ -18,12 +17,24 @@ class DdcFactory extends Factory
      */
     public function definition(): array
     {
-        $code = str_pad((string) fake()->unique()->numberBetween(0, 999), 3, '0', STR_PAD_LEFT);
+        $classes = [
+            '000' => 'Karya Umum dan Ilmu Komputer',
+            '100' => 'Filsafat dan Psikologi',
+            '200' => 'Agama',
+            '300' => 'Ilmu Sosial',
+            '400' => 'Bahasa',
+            '500' => 'Sains',
+            '600' => 'Teknologi',
+            '700' => 'Seni dan Rekreasi',
+            '800' => 'Sastra',
+            '900' => 'Sejarah dan Geografi',
+        ];
+        $code = fake()->randomElement(array_keys($classes));
 
         return [
             'code' => $code,
-            'name' => Str::title(fake()->words(rand(2, 4), true)),
-            'description' => fake()->optional()->sentence(),
+            'name' => $classes[$code],
+            'description' => "Klasifikasi DDC {$code} untuk bidang {$classes[$code]}.",
         ];
     }
 }

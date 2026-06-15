@@ -1,17 +1,21 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterUserController;
-use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Livewire\BookCatalog;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/katalog', BookCatalog::class)->name('books.index');
-Route::get('/buku/{book}', [BookController::class, 'show'])->name('books.show');
+Route::get('/buku/{book:slug}', [BookController::class, 'show'])->name('books.show');
+Route::get('/kategori', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/kategori/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 Route::get('/register', [RegisterUserController::class, 'create'])->name('register');

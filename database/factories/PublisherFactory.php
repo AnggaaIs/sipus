@@ -16,8 +16,17 @@ class PublisherFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->company() . ' Press',
-            'city' => fake()->city(),
+            'name' => fake()->randomElement([
+                'Pustaka Nusantara',
+                'Cahaya Ilmu',
+                'Bumi Aksara',
+                'Pelita Pendidikan',
+                'Andalas Media',
+                'Cendekia Indonesia',
+                'Literasi Bangsa',
+                'Tunas Pustaka',
+            ]),
+            'city' => fake('id_ID')->city(),
         ];
     }
 }

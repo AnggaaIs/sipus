@@ -39,7 +39,7 @@
                 <div class="mt-10 flex flex-wrap gap-4">
 
                <x-ui.button
-                    href="#"
+                    :href="route('books.index')"
                     variant="primary"
                     size="lg"
                     class=" text-white hover:bg-white hover:text-primary">
@@ -69,7 +69,7 @@
 
                 <form
                     method="GET"
-                    action="#"
+                    action="{{ route('books.index') }}"
                     class="flex flex-col gap-4 sm:flex-row sm:items-center">
 
                     <div class="flex-1">
@@ -111,7 +111,7 @@
                 </p>
             </div>
 
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
 
                 @forelse ($latestBooks ?? [] as $book)
 
@@ -153,7 +153,7 @@
             <div class="mt-8">
 
                 <x-ui.button
-                    href="#"
+                    :href="route('books.index')"
                     variant="primary"
                     size="lg">
                     Mulai Sekarang

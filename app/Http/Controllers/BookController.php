@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class BookController extends Controller
 {
@@ -34,8 +35,15 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show(Book $book): View
     {
+        $book->load([
+            'authors:id,name',
+            'category:id,name,color',
+            'ddc:id,code,name',
+            'publisher:id,name',
+        ]);
+
         return view('books.show', compact('book'));
     }
 
