@@ -17,7 +17,7 @@ class HomeController extends Controller
 
         $latestBooks = (clone $baseBookQuery)
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
         $mostBorrowedBooks = (clone $baseBookQuery)
@@ -27,7 +27,7 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-        if ($mostBorrowedBooks->every(fn(Book $book): bool => (int) ($book->loan_items_sum_quantity ?? 0) === 0)) {
+        if ($mostBorrowedBooks->every(fn (Book $book): bool => (int) ($book->loan_items_sum_quantity ?? 0) === 0)) {
             $mostBorrowedBooks = (clone $baseBookQuery)
                 ->orderByDesc('available_copies')
                 ->latest()

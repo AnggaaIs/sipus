@@ -19,10 +19,10 @@ class UserSeeder extends Seeder
         ]);
 
         User::factory()->member()->create([
-            'name'      => 'John Doe',
-            'full_name' => 'Johnathan Doe',
-            'email'     => 'john.doe@sipus.com',
-            'password'  => Hash::make('password'),
+            'name' => 'Budi Santoso',
+            'full_name' => 'Budi Santoso',
+            'email' => 'budi.santoso@sipus.com',
+            'password' => Hash::make('password'),
         ]);
 
         // Buat 20 siswa yang sudah approved

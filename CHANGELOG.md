@@ -11,6 +11,10 @@ menggunakan [Semantic Versioning](https://semver.org/).
 - Dokumentasi instalasi, fitur, dependency, refactoring, dan GitHub Actions.
 - Workflow CI untuk build aset dan menjalankan Pest.
 - Screenshot panel admin dan fitur CRUD utama.
+- Halaman daftar kategori buku untuk akses pengunjung.
+- CRUD Penulis dan Penerbit di panel admin.
+- Manajemen pengembalian buku di panel admin.
+- Halaman error 404 kustom.
 
 ### Changed
 

@@ -106,8 +106,7 @@
 }
 
 #nprogress .peg {
-    box-shadow: 0 0 10px
-        color-mix(in oklab, var(--color-primary) 55%, transparent);
+    box-shadow: 0 0 10px color-mix(in oklab, var(--color-primary) 55%, transparent);
 }
 
 /* Custom Filament styles */

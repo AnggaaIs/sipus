@@ -32,15 +32,17 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 
 - Beranda yang menampilkan koleksi buku terbaru.
 - Katalog buku dengan pencarian berdasarkan judul, penulis, ISBN, dan DDC.
+- Halaman daftar kategori untuk memudahkan eksplorasi koleksi berdasarkan subjek.
 - Filter koleksi berdasarkan klasifikasi DDC.
 - Informasi ketersediaan dan jumlah eksemplar buku.
 - Login menggunakan email atau NISN dan registrasi akun dengan persetujuan admin.
 - Pemisahan akses panel admin dan panel user.
 - Panel administrasi berbasis Filament dengan mode SPA.
-- CRUD buku, kategori, DDC, pengguna, peminjaman, dan denda.
+- CRUD buku, kategori, DDC, penulis, penerbit, pengguna, peminjaman, pengembalian, dan denda.
 - Pengelolaan denda keterlambatan.
 - Manajemen persetujuan akun pengguna.
 - Authorization menggunakan Laravel Model Policy.
+- Halaman error 404 kustom yang ramah pengguna.
 - Antarmuka responsif untuk perangkat desktop dan mobile.
 
 ## Teknologi yang Digunakan

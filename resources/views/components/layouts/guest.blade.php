@@ -1,7 +1,8 @@
 @props([
     'title' => config('app.name', 'SIPUS'),
     'brand' => config('app.name', 'SIPUS'),
-    'description' => 'SIPUS adalah sistem informasi perpustakaan untuk menjelajahi katalog buku, kategori, dan detail koleksi perpustakaan dengan lebih mudah.',
+    'description' =>
+        'SIPUS adalah sistem informasi perpustakaan untuk menjelajahi katalog buku, kategori, dan detail koleksi perpustakaan dengan lebih mudah.',
     'robots' => 'index,follow',
     'canonical' => null,
     'image' => asset('images/library_image.jpg'),
@@ -10,29 +11,12 @@
 
     // Untuk sementara hanya tampilan
     'navigationLinks' => [
-        [
-            'label' => 'Beranda',
-            'href' => '#',
-            'active' => true,
-        ],
-        [
-            'label' => 'Katalog',
-            'href' => '#',
-            'active' => false,
-        ],
-        [
-            'label' => 'Kategori',
-            'href' => '#',
-            'active' => false,
-        ],
-        [
-            'label' => 'Tentang',
-            'href' => '#',
-            'active' => false,
-        ],
+        ['label' => 'Katalog', 'href' => route('books.index'), 'active' => request()->routeIs('books.*')],
+        ['label' => 'Kategori', 'href' => route('categories.index'), 'active' => request()->routeIs('categories.*')],
+        ['label' => 'Tentang', 'href' => url('/#tentang'), 'active' => false],
     ],
 
-    'loginUrl' => '#',
+    'loginUrl' => route('login'),
 ])
 
 @php
@@ -82,8 +66,8 @@
         href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-       @livewireStyles
+    @vite(['resources/css/app.css', 'resources/js/progress.js'])
+    @livewireStyles
 </head>
 
 <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
@@ -91,11 +75,7 @@
     <div class="flex min-h-screen flex-col">
 
         {{-- Navbar --}}
-        <x-navigation.navbar
-            :brand="$brand"
-            :links="$navigationLinks"
-            :login-url="$loginUrl"
-            :overlay="$navbarOverlay" />
+        <x-navigation.navbar :brand="$brand" :links="$navigationLinks" :login-url="$loginUrl" :overlay="$navbarOverlay" />
 
         {{-- Content --}}
         <main class="flex-1">
@@ -103,15 +83,10 @@
         </main>
 
         {{-- Footer --}}
-        <footer class="border-t bg-white">
-            <div class="mx-auto max-w-7xl px-6 py-6">
-                <p class="text-center text-sm text-slate-500">
-                    © {{ date('Y') }} SIPUS - Sistem Informasi Perpustakaan
-                </p>
-            </div>
-        </footer>
+        <x-navigation.footer :brand="$brand" :links="$navigationLinks" :login-url="$loginUrl" />
 
     </div>
 
 </body>
+
 </html>

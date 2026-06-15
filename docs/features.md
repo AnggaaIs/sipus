@@ -59,6 +59,21 @@ binding, lalu menampilkan detail buku.
 - `BookController@show`
 - `resources/views/books/show.blade.php`
 
+## Kategori Buku
+
+**Tujuan:** Menampilkan daftar kategori buku untuk memudahkan navigasi berdasarkan subjek.
+
+**Aktor:** Pengunjung umum.
+
+**Alur:** Pengunjung membuka halaman kategori, sistem menampilkan semua kategori yang tersedia. Pengunjung dapat memilih kategori untuk melihat buku-buku di dalamnya.
+
+**Route dan kode terkait:**
+
+- `GET /kategori`
+- `GET /kategori/{category:slug}`
+- `CategoryController@index`
+- `CategoryController@show`
+
 ## Login
 
 **Tujuan:** Mengautentikasi admin dan pengguna dengan satu halaman login.
@@ -112,6 +127,18 @@ pengiriman email, validasi token, maupun penyimpanan password baru.
 - `PasswordResetLinkController`
 - `NewPasswordController`
 
+## Penanganan Error (404 Not Found)
+
+**Tujuan:** Memberikan umpan balik visual yang ramah ketika pengunjung atau pengguna mengakses rute atau data yang tidak tersedia.
+
+**Aktor:** Semua pengunjung.
+
+**Alur:** Pengguna mengakses URL yang tidak terdaftar, sistem menangkap exception lalu merender halaman kustom 404, serta menyediakan tombol untuk kembali ke beranda.
+
+**Route dan kode terkait:**
+
+- Tampilan pada `resources/views/errors/404.blade.php`
+
 ## Panel Admin
 
 **Tujuan:** Menyediakan area operasional perpustakaan.
@@ -146,6 +173,20 @@ Mengelola klasifikasi Dewey Decimal Classification untuk katalog.
 - Resource: `DdcResource`
 - Path: `/admin/ddcs`
 
+### CRUD Penulis
+
+Mengelola data penulis buku yang ada di koleksi perpustakaan.
+
+- Resource: `AuthorResource`
+- Path: `/admin/authors`
+
+### CRUD Penerbit
+
+Mengelola entitas penerbit buku yang ada di koleksi perpustakaan.
+
+- Resource: `PublisherResource`
+- Path: `/admin/publishers`
+
 ### CRUD Pengguna
 
 Mengelola identitas, role, status persetujuan, kelas, dan status aktif akun.
@@ -167,6 +208,13 @@ Mengelola denda yang terkait dengan transaksi peminjaman.
 
 - Resource: `FineResource`
 - Path: `/admin/fines`
+
+### Manajemen Pengembalian
+
+Mengelola proses pengembalian buku dari transaksi peminjaman.
+
+- Resource: `PengembalianResource`
+- Path: `/admin/pengembalians`
 
 ## Panel User
 

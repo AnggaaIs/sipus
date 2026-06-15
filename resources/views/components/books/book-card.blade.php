@@ -1,6 +1,9 @@
 @php
     $coverUrl = $book->cover_url;
     $fallbackLogo = asset('images/sepang_sma_logo.png');
+    $authorNames = $book->relationLoaded('authors')
+        ? $book->authors->pluck('name')->join(', ')
+        : '';
 @endphp
 
 <a href="{{ route('books.show', $book) }}"
@@ -41,9 +44,9 @@
                 class="line-clamp-2 text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
                 {{ $book->title }}
             </h3>
-            @if (!empty($book->author))
+            @if ($authorNames !== '')
                 <p class="line-clamp-1 text-xs text-muted-foreground">
-                    {{ $book->author }}
+                    {{ $authorNames }}
                 </p>
             @endif
             @if ($book->relationLoaded('ddc') && $book->ddc)

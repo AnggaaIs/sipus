@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDdc extends CreateRecord
 {
     protected static string $resource = DdcResource::class;
+
+     protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

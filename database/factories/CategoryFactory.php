@@ -16,12 +16,21 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = Str::title(fake()->unique()->words(rand(1, 2), true));
+        $name = fake()->randomElement([
+            'Fiksi',
+            'Sains',
+            'Teknologi',
+            'Sejarah',
+            'Pendidikan',
+            'Budaya',
+            'Agama',
+            'Referensi',
+        ]);
 
         return [
             'name' => $name,
             'slug' => Str::slug($name) . '-' . fake()->unique()->numerify('##'),
-            'description' => fake()->optional()->sentence(),
+            'description' => "Koleksi buku {$name} untuk menambah wawasan dan mendukung kegiatan belajar.",
             'color' => fake()->hexColor(),
         ];
     }
