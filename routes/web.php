@@ -26,3 +26,7 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
+
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});

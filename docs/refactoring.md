@@ -171,6 +171,30 @@ Menu lebih terstruktur dan perpindahan halaman panel terasa lebih cepat.
 
 **Bukti commit:** `0515a5b`.
 
+## Pengalihan Otomatis Setelah Pembuatan Data di Filament
+
+**Sebelum**
+
+Setelah admin membuat data baru di form Create, admin tetap berada di halaman form.
+
+**Masalah**
+
+Alur kerja kurang efisien karena admin sering kali ingin melihat data yang baru dibuat di tabel utama.
+
+**Perubahan**
+
+Disesuaikan agar setelah pembuatan data, sistem otomatis mengarahkan (redirect) ke halaman index (tabel).
+
+**Alasan**
+
+Meningkatkan efisiensi navigasi bagi pengguna admin.
+
+**Dampak**
+
+Pengalaman pengguna yang lebih mulus dan cepat pada seluruh CRUD di panel admin.
+
+**Bukti commit:** `672e9a8`.
+
 ## Rencana Refactoring Berikutnya
 
 - Menghapus method CRUD kosong pada `BookController` atau menggantinya dengan
