@@ -3,11 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - angga
-      - naya
-      - ihza
-      - alya
+      - "**"
   pull_request:
     branches:
       - main
@@ -31,7 +27,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: "8.4"
           extensions: mbstring, dom, fileinfo, intl, pdo_sqlite, sqlite3
           coverage: none
           tools: composer:v2
@@ -39,7 +35,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
 
       - name: Validate Composer configuration
@@ -72,5 +68,5 @@ jobs:
 
       - name: Run tests
         env:
-          PAO_DISABLE: '1'
+          PAO_DISABLE: "1"
         run: vendor/bin/pest --ci
