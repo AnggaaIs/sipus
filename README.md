@@ -47,17 +47,17 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 
 ## Teknologi yang Digunakan
 
-| Teknologi | Kegunaan |
-| --- | --- |
-| PHP 8.3+ | Bahasa pemrograman backend |
-| Laravel 13 | Framework utama aplikasi |
-| Filament 5 | Panel administrasi |
-| Livewire 4 | Komponen antarmuka reaktif |
-| Alpine.js 3 | Interaksi ringan pada sisi pengguna |
-| Tailwind CSS 4 | Styling antarmuka |
-| Vite 8 | Build tool aset frontend |
-| MySQL | Basis data aplikasi |
-| Pest 4 | Pengujian aplikasi |
+| Teknologi      | Kegunaan                            |
+| -------------- | ----------------------------------- |
+| PHP 8.3+       | Bahasa pemrograman backend          |
+| Laravel 13     | Framework utama aplikasi            |
+| Filament 5     | Panel administrasi                  |
+| Livewire 4     | Komponen antarmuka reaktif          |
+| Alpine.js 3    | Interaksi ringan pada sisi pengguna |
+| Tailwind CSS 4 | Styling antarmuka                   |
+| Vite 8         | Build tool aset frontend            |
+| MySQL          | Basis data aplikasi                 |
+| Pest 4         | Pengujian aplikasi                  |
 
 ## Instalasi Singkat
 
@@ -74,54 +74,54 @@ Pastikan perangkat sudah memiliki:
 
 1. Clone repositori dan masuk ke direktori proyek.
 
-   ```bash
-   git clone https://github.com/AnggaaIs/sipus.git
-   cd sipus
-   ```
+    ```bash
+    git clone https://github.com/AnggaaIs/sipus.git
+    cd sipus
+    ```
 
 2. Instal dependensi backend dan frontend.
 
-   ```bash
-   composer install
-   npm install
-   ```
+    ```bash
+    composer install
+    npm install
+    ```
 
 3. Salin berkas konfigurasi lingkungan dan buat application key.
 
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
 4. Buat database MySQL bernama `sipus`, kemudian sesuaikan konfigurasi
    database pada berkas `.env`.
 
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=sipus
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=sipus
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
 
 5. Jalankan migrasi dan seeder.
 
-   ```bash
-   php artisan migrate --seed
-   ```
+    ```bash
+    php artisan migrate --seed
+    ```
 
 6. Build aset frontend.
 
-   ```bash
-   npm run build
-   ```
+    ```bash
+    npm run build
+    ```
 
 7. Jalankan aplikasi.
 
-   ```bash
-   composer run dev
-   ```
+    ```bash
+    composer run dev
+    ```
 
 Aplikasi dapat dibuka melalui `http://localhost:8000`, sedangkan panel admin
 tersedia di `http://localhost:8000/admin` dan panel user di
@@ -129,10 +129,10 @@ tersedia di `http://localhost:8000/admin` dan panel user di
 
 ### Akun Pengembangan
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | `admin@sipus.com` | `password` |
-| User | `john.doe@sipus.com` | `password` |
+| Role  | Email                | Password   |
+| ----- | -------------------- | ---------- |
+| Admin | `admin@sipus.com`    | `password` |
+| User  | `john.doe@sipus.com` | `password` |
 
 > Akun di atas berasal dari seeder dan hanya ditujukan untuk lingkungan
 > pengembangan. Ganti kredensial sebelum aplikasi digunakan pada lingkungan
@@ -142,30 +142,30 @@ tersedia di `http://localhost:8000/admin` dan panel user di
 
 ### Halaman Utama
 
-![Perpustakaan SMA Semen Padang](public/images/Perpustakaan.jpg)
+![Halaman Utama](public/images/screenshot/landing_page.png)
 
 ### Halaman Autentikasi
 
-![SMA Semen Padang](public/images/Login.jpg)
+![Halaman Login](public/images/screenshot/halaman_login.png)
+
+### Katalog Buku
+
+![Katalog Buku](public/images/screenshot/katalog.png)
 
 ### Dashboard Admin
 
-![Dashboard admin SIPUS](public/images/dashboard-admin.png)
-
-### CRUD Buku
-
-![CRUD buku SIPUS](public/images/crud-buku.png)
+![Dashboard Admin](public/images/screenshot/halaman_admin.png)
 
 ## Dokumentasi
 
-| Dokumen | Isi |
-| --- | --- |
-| [Panduan instalasi](docs/installation.md) | Persyaratan, setup, test, dan troubleshooting |
-| [Dokumentasi fitur](docs/features.md) | Aktor, alur, route, controller, dan screenshot |
-| [Dokumentasi dependency](docs/dependency.md) | Package, versi, fungsi, dampak, dan risiko |
-| [Dokumentasi refactoring](docs/refactoring.md) | Masalah, perubahan, alasan, dampak, dan bukti commit |
+| Dokumen                                              | Isi                                                   |
+| ---------------------------------------------------- | ----------------------------------------------------- |
+| [Panduan instalasi](docs/installation.md)            | Persyaratan, setup, test, dan troubleshooting         |
+| [Dokumentasi fitur](docs/features.md)                | Aktor, alur, route, controller, dan screenshot        |
+| [Dokumentasi dependency](docs/dependency.md)         | Package, versi, fungsi, dampak, dan risiko            |
+| [Dokumentasi refactoring](docs/refactoring.md)       | Masalah, perubahan, alasan, dampak, dan bukti commit  |
 | [Dokumentasi GitHub Actions](docs/github-actions.md) | Trigger, tahapan CI, hasil, dan pengembangan lanjutan |
-| [Changelog](CHANGELOG.md) | Riwayat perubahan dan evolusi proyek |
+| [Changelog](CHANGELOG.md)                            | Riwayat perubahan dan evolusi proyek                  |
 
 ## Menjalankan Verifikasi
 
@@ -176,12 +176,12 @@ php artisan test --compact
 
 ## Tim Pengembang
 
-| Nama | NIM |
-| --- | --- |
-| Angga Islami Pasya | 2411081004 |
-| Ihza Mahendra | 2411082009 |
+| Nama                  | NIM        |
+| --------------------- | ---------- |
+| Angga Islami Pasya    | 2411081004 |
+| Ihza Mahendra         | 2411082009 |
 | Inayah Henni El Najla | 2411081010 |
-| Alya Dhiya Najla | 2411081003 |
+| Alya Dhiya Najla      | 2411081003 |
 
 ---
 
