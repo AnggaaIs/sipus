@@ -14,6 +14,7 @@ menggunakan [Semantic Versioning](https://semver.org/).
 - Halaman daftar kategori buku untuk akses pengunjung.
 - CRUD Penulis dan Penerbit di panel admin.
 - Manajemen pengembalian buku di panel admin.
+- Halaman error 404 kustom.
 
 ### Changed
 

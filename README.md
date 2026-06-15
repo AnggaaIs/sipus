@@ -42,6 +42,7 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 - Pengelolaan denda keterlambatan.
 - Manajemen persetujuan akun pengguna.
 - Authorization menggunakan Laravel Model Policy.
+- Halaman error 404 kustom yang ramah pengguna.
 - Antarmuka responsif untuk perangkat desktop dan mobile.
 
 ## Teknologi yang Digunakan

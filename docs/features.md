@@ -127,6 +127,18 @@ pengiriman email, validasi token, maupun penyimpanan password baru.
 - `PasswordResetLinkController`
 - `NewPasswordController`
 
+## Penanganan Error (404 Not Found)
+
+**Tujuan:** Memberikan umpan balik visual yang ramah ketika pengunjung atau pengguna mengakses rute atau data yang tidak tersedia.
+
+**Aktor:** Semua pengunjung.
+
+**Alur:** Pengguna mengakses URL yang tidak terdaftar, sistem menangkap exception lalu merender halaman kustom 404, serta menyediakan tombol untuk kembali ke beranda.
+
+**Route dan kode terkait:**
+
+- Tampilan pada `resources/views/errors/404.blade.php`
+
 ## Panel Admin
 
 **Tujuan:** Menyediakan area operasional perpustakaan.
