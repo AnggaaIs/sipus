@@ -81,6 +81,10 @@ class BookForm
                         AuthorForm::nameField(),
                         AuthorForm::bioField(),
                     ]),
+                TextInput::make('location')
+                    ->label('Lokasi')
+                    ->maxLength(255)
+                    ->default(null),
                 Textarea::make('description')
                     ->label('Deskripsi')
                     ->rows(4)

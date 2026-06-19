@@ -43,6 +43,7 @@ class BookCatalog extends Component
                     $bookQuery
                         ->where('title', 'like', "%{$this->search}%")
                         ->orWhere('isbn', 'like', "%{$this->search}%")
+                        ->orWhere('location', 'like', "%{$this->search}%")
                         ->orWhereHas('ddc', function ($ddcQuery) {
                             $ddcQuery
                                 ->where('code', 'like', "%{$this->search}%")

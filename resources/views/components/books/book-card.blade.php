@@ -54,6 +54,13 @@
                     DDC {{ $book->ddc->code }} - {{ $book->ddc->name }}
                 </p>
             @endif
+            @if (filled($book->location))
+                <p class="line-clamp-1 text-[11px] text-muted-foreground">
+                    Lokasi: {{ $book->location }}
+                </p>
+            @else
+                
+            @endif
         </div>
 
         {{-- Informasi tambahan --}}

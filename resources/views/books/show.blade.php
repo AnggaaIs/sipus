@@ -97,6 +97,7 @@
                             <x-ui.meta-item icon="language" label="Bahasa" :value="strtoupper($book->language)" />
                             <x-ui.meta-item icon="identification" label="ISBN" :value="$book->isbn ?? '-'" />
                             <x-ui.meta-item icon="bookmark" label="DDC" :value="$book->ddc ? $book->ddc->code . ' - ' . $book->ddc->name : '-'" />
+                            <x-ui.meta-item icon="map-pin" label="Lokasi" :value="$book->location ?? '-'" />
                         </div>
                     </x-ui.card>
 

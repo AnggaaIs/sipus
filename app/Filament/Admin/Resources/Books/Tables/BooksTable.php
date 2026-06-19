@@ -55,6 +55,10 @@ class BooksTable
                     ->label('Tersedia')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('location')
+                    ->label('Lokasi')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

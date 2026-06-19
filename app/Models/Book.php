@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
     'category_id',
     'ddc_id',
     'publisher_id',
+    'location',
     'description',
     'publish_year',
     'pages',

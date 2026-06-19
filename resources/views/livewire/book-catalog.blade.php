@@ -25,7 +25,7 @@
                                 id="catalog-query"
                                 type="text"
                                 wire:model.live.debounce.300ms="search"
-                                placeholder="Cari judul buku, penulis, atau ISBN..."
+                                placeholder="Cari judul buku, penulis, ISBN, atau lokasi..."
                                 class="w-full bg-transparent text-sm text-(--foreground) outline-none placeholder:text-(--muted-foreground)"
                             >
                         </div>
