@@ -15,6 +15,8 @@ menggunakan [Semantic Versioning](https://semver.org/).
 - CRUD Penulis dan Penerbit di panel admin.
 - Manajemen pengembalian buku di panel admin.
 - Halaman error 404 kustom.
+- Fitur lokasi buku yang dapat dikelola melalui panel admin serta ditampilkan
+  dan dicari melalui katalog buku.
 
 ### Changed
 
