@@ -16,11 +16,9 @@ secara otomatis.
 
 Workflow berjalan saat:
 
-- push ke branch `main`, `angga`, `naya`, `ihza`, atau `alya`;
+- push ke semua branch;
 - pull request menuju branch `main`;
 - dijalankan manual melalui `workflow_dispatch`.
-
-Branch `testing` tidak termasuk karena direncanakan untuk dihapus.
 
 ## Environment
 
@@ -103,9 +101,10 @@ SQLite:
 - seluruh test Pest yang tersedia berhasil.
 
 CI tidak membuktikan seluruh fitur berjalan dan tidak dapat menjamin aplikasi
-sepenuhnya aman. Saat ini test yang tersedia hanya dua test contoh, sehingga
-alur login, pemisahan role, policy, CRUD, upload, dan integrasi antarmuka belum
-tercakup. Audit dependency juga tidak menemukan kelemahan logika aplikasi,
+sepenuhnya aman. Saat ini test yang tersedia sudah mencakup alur login,
+pemisahan role, registrasi, reset password view, persetujuan akun, workflow
+profil Filament, dan sebagian lifecycle peminjaman, tetapi coverage masih jauh
+dari lengkap. Audit dependency juga tidak menemukan kelemahan logika aplikasi,
 konfigurasi server, kebocoran secret, SQL injection khusus implementasi, XSS,
 CSRF yang salah diterapkan, maupun masalah otorisasi tanpa test atau alat
 analisis tambahan.
@@ -115,10 +114,10 @@ keamanan.
 
 ## Status Audit Saat Ini
 
-Pada 13 Juni 2026, audit lokal masih menemukan advisori pada dependency PHP
-dan dua kerentanan kritis npm pada `shell-quote` melalui `concurrently`.
-Workflow akan gagal pada tahap audit sampai lockfile diperbarui ke versi yang
-sudah diperbaiki.
+Status aktual audit dependency mengikuti hasil terbaru dari workflow CI. Karena
+`composer audit` dan `npm audit --audit-level=high` dijalankan di pipeline,
+gunakan log workflow terakhir sebagai sumber kebenaran untuk advisori yang
+masih aktif.
 
 ## Pengembangan Berikutnya
 
