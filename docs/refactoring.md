@@ -113,8 +113,9 @@ Pemisahan panel mengurangi risiko resource admin terlihat oleh pengguna.
 
 **Dampak**
 
-Struktur siap dikembangkan dengan resource khusus pengguna tanpa mencampur
-CRUD operasional admin.
+Struktur sekarang mendukung resource khusus pengguna tanpa mencampur CRUD
+operasional admin. Saat ini panel user sudah memiliki resource
+`Peminjaman Saya`, `Denda Saya`, dan halaman profil terpisah dari panel admin.
 
 **Bukti commit:** `78194fe`.
 

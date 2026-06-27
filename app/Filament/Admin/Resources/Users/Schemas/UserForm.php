@@ -114,10 +114,6 @@ class UserForm
                     ->tel()
                     ->maxLength(255)
                     ->default(null),
-                TextInput::make('avatar')
-                    ->label('Foto profil')
-                    ->maxLength(255)
-                    ->default(null),
                 Toggle::make('is_active')
                     ->label('Aktif')
                     ->default(true)

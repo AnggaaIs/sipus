@@ -89,7 +89,7 @@ Seeder menyediakan akun pengembangan:
 | Role | Email | Password |
 | --- | --- | --- |
 | Admin | `admin@sipus.com` | `password` |
-| User | `john.doe@sipus.com` | `password` |
+| User | `budi.santoso@sipus.com` | `password` |
 
 Kredensial ini hanya untuk pengembangan. Jangan digunakan pada production.
 
@@ -128,6 +128,12 @@ Endpoint utama:
 | Login | `http://localhost:8000/login` |
 | Panel admin | `http://localhost:8000/admin` |
 | Panel user | `http://localhost:8000/user` |
+
+Catatan panel user:
+
+- Avatar profil memakai inisial bawaan Filament.
+- User biasa hanya dapat mengganti kata sandi dari menu profil.
+- Perubahan nama, email, NISN, kelas, dan nomor telepon harus dilakukan admin.
 
 ## Menjalankan Test
 

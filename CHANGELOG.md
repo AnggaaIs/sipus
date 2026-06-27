@@ -15,10 +15,17 @@ menggunakan [Semantic Versioning](https://semver.org/).
 - CRUD Penulis dan Penerbit di panel admin.
 - Manajemen pengembalian buku di panel admin.
 - Halaman error 404 kustom.
+- Halaman profil Filament kustom pada panel admin dan user.
+- Notifikasi email ketika kata sandi profil berhasil diganti.
+- Test feature untuk profil Filament, keamanan perubahan profil, dan avatar user.
 
 ### Changed
 
 - README diperbarui agar menjadi pintu masuk ke dokumentasi proyek.
+- Dokumentasi proyek diselaraskan dengan implementasi terbaru untuk auth,
+  reset password, panel user, dependency, dan workflow CI.
+- Pengguna biasa hanya dapat mengganti kata sandi dari halaman profil, sedangkan
+  perubahan identitas diarahkan ke admin.
 
 ## [0.3.0] - 2026-06-13
 

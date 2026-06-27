@@ -36,11 +36,15 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 - Filter koleksi berdasarkan klasifikasi DDC.
 - Informasi ketersediaan dan jumlah eksemplar buku.
 - Login menggunakan email atau NISN dan registrasi akun dengan persetujuan admin.
+- Reset kata sandi melalui email.
 - Pemisahan akses panel admin dan panel user.
 - Panel administrasi berbasis Filament dengan mode SPA.
 - CRUD buku, kategori, DDC, penulis, penerbit, pengguna, peminjaman, pengembalian, dan denda.
+- Panel user untuk melihat riwayat peminjaman dan denda pribadi.
 - Pengelolaan denda keterlambatan.
 - Manajemen persetujuan akun pengguna.
+- Halaman profil Filament kustom dengan verifikasi kata sandi saat ini untuk setiap perubahan.
+- Pengguna biasa hanya dapat mengganti kata sandi dari profil; perubahan identitas diarahkan ke admin.
 - Authorization menggunakan Laravel Model Policy.
 - Halaman error 404 kustom yang ramah pengguna.
 - Antarmuka responsif untuk perangkat desktop dan mobile.
@@ -49,9 +53,9 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 
 | Teknologi      | Kegunaan                            |
 | -------------- | ----------------------------------- |
-| PHP 8.3+       | Bahasa pemrograman backend          |
+| PHP 8.4        | Bahasa pemrograman backend          |
 | Laravel 13     | Framework utama aplikasi            |
-| Filament 5     | Panel administrasi                  |
+| Filament 5     | Panel admin dan panel user          |
 | Livewire 4     | Komponen antarmuka reaktif          |
 | Alpine.js 3    | Interaksi ringan pada sisi pengguna |
 | Tailwind CSS 4 | Styling antarmuka                   |
@@ -65,7 +69,7 @@ Padang, dan pengunjung yang ingin melihat katalog buku.
 
 Pastikan perangkat sudah memiliki:
 
-- PHP 8.3 atau lebih baru
+- PHP 8.4 atau lebih baru
 - Composer
 - Node.js dan npm
 - MySQL
@@ -132,11 +136,18 @@ tersedia di `http://localhost:8000/admin` dan panel user di
 | Role  | Email                | Password   |
 | ----- | -------------------- | ---------- |
 | Admin | `admin@sipus.com`    | `password` |
-| User  | `john.doe@sipus.com` | `password` |
+| User  | `budi.santoso@sipus.com` | `password` |
 
 > Akun di atas berasal dari seeder dan hanya ditujukan untuk lingkungan
 > pengembangan. Ganti kredensial sebelum aplikasi digunakan pada lingkungan
 > produksi.
+
+### Catatan Profil Pengguna
+
+- Avatar pada panel Filament menggunakan inisial bawaan.
+- Upload avatar dari halaman profil tidak digunakan.
+- Pengguna dengan role `user` hanya dapat mengganti kata sandi melalui menu profil.
+- Jika ingin mengubah nama, email, NISN, kelas, atau nomor telepon, pengguna harus menghubungi admin.
 
 ## Screenshot Proyek
 

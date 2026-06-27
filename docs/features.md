@@ -112,20 +112,65 @@ disetujui admin.
 - `RegisterUserController`
 - `RegisterRequest`
 
-## Lupa dan Reset Password (Belum Tersedia)
+## Lupa Password
 
-Endpoint lupa dan reset password sudah terdaftar, tetapi implementasi saat
-ini masih berupa placeholder. Seluruh aksi mengarahkan pengguna kembali ke
-halaman login dengan pesan `Reset password belum tersedia.` Belum ada
-pengiriman email, validasi token, maupun penyimpanan password baru.
+**Tujuan:** Mengirim tautan atur ulang kata sandi ke email pengguna.
 
-**Route dan kode placeholder:**
+**Aktor:** Pengguna yang lupa kata sandi.
+
+**Alur:** Pengguna mengisi email pada halaman lupa password, sistem memvalidasi
+email, mengirim tautan reset melalui broker password Laravel, lalu menampilkan
+pesan sukses jika pengiriman berhasil.
+
+**Route dan kode terkait:**
 
 - `GET|POST /forgot-password`
+- `PasswordResetLinkController`
+- `PasswordResetLinkRequest`
+
+## Reset Password
+
+**Tujuan:** Mengganti kata sandi melalui token reset yang dikirim ke email.
+
+**Aktor:** Pengguna yang menerima tautan reset password.
+
+**Alur:** Pengguna membuka tautan reset, sistem menampilkan form dengan token
+dan email. Setelah pengguna mengirim kata sandi baru yang valid, sistem
+memperbarui password, memperbarui `remember_token`, memicu event
+`PasswordReset`, lalu mengarahkan pengguna kembali ke login.
+
+**Route dan kode terkait:**
+
 - `GET /reset-password/{token}`
 - `POST /reset-password`
-- `PasswordResetLinkController`
 - `NewPasswordController`
+- `NewPasswordRequest`
+
+## Profil Pengguna pada Panel Filament
+
+**Tujuan:** Menyediakan pengelolaan profil yang aman pada panel admin dan user.
+
+**Aktor:** Admin aktif serta user aktif yang sudah disetujui.
+
+**Alur:** Kedua panel Filament menggunakan halaman profil kustom
+`App\Filament\Pages\Auth\EditProfile`. Setiap penyimpanan perubahan mewajibkan
+kata sandi saat ini. Jika kata sandi diganti, sistem mengirim notifikasi email
+bahwa perubahan berhasil dilakukan. Jika email diganti, Filament menahan email
+lama sampai proses verifikasi selesai.
+
+**Batasan khusus user biasa:**
+
+- User hanya dapat mengganti kata sandi dari halaman profil.
+- Nama, email, NISN, kelas, dan nomor telepon tidak dapat diubah sendiri.
+- Form profil menampilkan instruksi agar perubahan data identitas dilakukan
+  melalui admin.
+
+**Kode terkait:**
+
+- `app/Filament/Pages/Auth/EditProfile.php`
+- `app/Notifications/PasswordChangedNotification.php`
+- `AdminPanelProvider`
+- `UserPanelProvider`
 
 ## Penanganan Error (404 Not Found)
 
@@ -224,9 +269,16 @@ Mengelola proses pengembalian buku dari transaksi peminjaman.
 
 **Path:** `/user`
 
-Kondisi saat ini: panel dan dashboard dasar sudah tersedia. Resource layanan
-mandiri pengguna belum ditambahkan sehingga pengembangan berikutnya perlu
-memasukkan riwayat peminjaman, status denda, dan profil pengguna.
+Panel user saat ini sudah menyediakan:
+
+- Riwayat peminjaman pribadi melalui resource `LoanResource` pada path
+  `/user/loans`.
+- Daftar denda pribadi melalui resource `FineResource` pada path
+  `/user/fines`.
+- Halaman profil kustom untuk mengganti kata sandi secara mandiri.
+
+User tidak dapat membuat, mengubah, atau menghapus data peminjaman dan denda
+dari panel ini. Resource hanya menampilkan data milik user yang sedang login.
 
 ## Authorization dan Policy
 
