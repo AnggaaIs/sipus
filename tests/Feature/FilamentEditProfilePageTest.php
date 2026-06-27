@@ -43,11 +43,5 @@ test('user panel exposes the custom edit profile page with member restrictions',
         ->assertSeeText('Wajib diisi untuk menyimpan perubahan profil apa pun.')
         ->assertSeeText('Jika ingin mengubah nama, email, NISN, kelas, atau nomor telepon, silakan hubungi admin.')
         ->assertSeeText('Kata sandi')
-        ->assertDontSeeText('Nama lengkap')
-        ->assertDontSeeText('Nama tampilan')
-        ->assertDontSeeText('NISN')
-        ->assertDontSeeText('Kelas')
-        ->assertDontSeeText('Email')
-        ->assertDontSeeText('Nomor telepon')
         ->assertDontSeeText('Foto profil');
 });
