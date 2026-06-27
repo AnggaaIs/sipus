@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class UserResource extends Resource
@@ -53,5 +54,55 @@ class UserResource extends Resource
             'create' => CreateUser::route('/create'),
             'edit' => EditUser::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public static function normalizeApprovalData(array $data, ?User $record = null): array
+    {
+        $status = $data['account_status'] ?? $record?->account_status ?? 'pending';
+
+        if ($status === 'active') {
+            $data['rejection_reason'] = null;
+
+            $shouldStampApproval = $record === null
+                || $record->account_status !== 'active'
+                || blank($record->approved_at)
+                || blank($record->approved_by);
+
+            if ($shouldStampApproval) {
+                $data['approved_at'] = now();
+                $data['approved_by'] = Auth::id();
+            } else {
+                $data['approved_at'] ??= $record->approved_at;
+                $data['approved_by'] ??= $record->approved_by;
+            }
+
+            return $data;
+        }
+
+        if ($status === 'rejected') {
+            $data['approved_at'] = null;
+            $data['approved_by'] = null;
+
+            return $data;
+        }
+
+        $data['rejection_reason'] = null;
+
+        if ($status === 'pending') {
+            $data['approved_at'] = null;
+            $data['approved_by'] = null;
+        } elseif ($record !== null) {
+            $data['approved_at'] ??= $record->approved_at;
+            $data['approved_by'] ??= $record->approved_by;
+        } else {
+            $data['approved_at'] = null;
+            $data['approved_by'] = null;
+        }
+
+        return $data;
     }
 }

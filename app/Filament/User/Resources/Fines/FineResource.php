@@ -6,6 +6,7 @@ use App\Filament\User\Resources\Fines\Pages\ListFines;
 use App\Filament\User\Resources\Fines\Schemas\FineForm;
 use App\Filament\User\Resources\Fines\Tables\FinesTable;
 use App\Models\Fine;
+use App\Models\Loan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -60,6 +61,8 @@ class FineResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        Loan::syncOverdueFines();
+
         return parent::getEloquentQuery()
             ->whereBelongsTo(Auth::user());
     }

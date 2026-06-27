@@ -4,9 +4,6 @@ namespace App\Filament\Admin\Resources\Fines\Tables;
 
 use App\Models\Fine;
 use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -41,7 +38,7 @@ class FinesTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn(string $state): string => $state === 'paid' ? 'Lunas' : 'Belum dibayar')
+                    ->formatStateUsing(fn (string $state): string => $state === 'paid' ? 'Lunas' : 'Belum dibayar')
                     ->colors([
                         'success' => 'paid',
                         'warning' => 'unpaid',
@@ -73,9 +70,12 @@ class FinesTable
                     ->label('Tandai lunas')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(fn(Fine $record): bool => $record->status === 'unpaid')
+                    ->visible(fn (Fine $record): bool => $record->status === 'unpaid')
                     ->requiresConfirmation()
                     ->action(function (Fine $record): void {
+                        $record->loan?->syncFine();
+                        $record->refresh();
+
                         $record->update([
                             'status' => 'paid',
                             'paid_at' => now(),
@@ -86,12 +86,7 @@ class FinesTable
                             ->title('Denda ditandai lunas')
                             ->send();
                     }),
-                EditAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions([]);
     }
 }

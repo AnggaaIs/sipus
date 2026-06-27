@@ -7,6 +7,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class LoansTable
 {
@@ -45,19 +46,19 @@ class LoansTable
                     ->state(fn (Loan $record): string => self::conditionLabel($record))
                     ->color(fn (Loan $record): string => self::conditionColor($record))
                     ->icon(fn (Loan $record): string => self::conditionIcon($record))
-                    ->description(fn (Loan $record): ?string => $record->status === 'returned'
+                    ->description(fn (Loan $record): ?string => $record->isReturned()
                         ? 'Kondisi saat buku diterima kembali'
                         : 'Akan muncul setelah pengembalian diproses'),
                 TextColumn::make('loan_date')
                     ->label('Tanggal pinjam')
-                    ->date()
+                    ->dateTime()
                     ->sortable()
                     ->description('Tanggal transaksi dibuat'),
                 TextColumn::make('due_date')
                     ->label('Jatuh tempo')
                     ->date()
                     ->sortable()
-                    ->badge(fn (Loan $record): bool => $record->status !== 'returned')
+                    ->badge(fn (Loan $record): bool => ! $record->isReturned())
                     ->color(fn (Loan $record): string => self::dueDateColor($record))
                     ->icon(fn (Loan $record): ?string => self::dueDateIcon($record))
                     ->description(fn (Loan $record): ?string => self::dueDateDescription($record)),
@@ -68,6 +69,7 @@ class LoansTable
                     ->placeholder('Belum dikembalikan'),
                 TextColumn::make('status')
                     ->label('Status')
+                    ->state(fn (Loan $record): string => $record->resolvedStatus())
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => self::statusLabel($state))
                     ->icon(fn (string $state): string => self::statusIcon($state))
@@ -85,11 +87,15 @@ class LoansTable
             ->filters([
                 SelectFilter::make('status')
                     ->label('Status')
-                    ->options([
-                        'borrowed' => 'Dipinjam',
-                        'returned' => 'Dikembalikan',
-                        'overdue' => 'Terlambat',
-                    ]),
+                    ->options(Loan::statusOptions())
+                    ->query(function (Builder $query, array $data): void {
+                        match ($data['value'] ?? null) {
+                            Loan::STATUS_BORROWED => $query->currentlyBorrowed(),
+                            Loan::STATUS_RETURNED => $query->returned(),
+                            Loan::STATUS_OVERDUE => $query->currentlyOverdue(),
+                            default => null,
+                        };
+                    }),
             ])
             ->recordActions([])
             ->toolbarActions([])
@@ -100,20 +106,15 @@ class LoansTable
 
     public static function statusLabel(string $state): string
     {
-        return match ($state) {
-            'borrowed' => 'Dipinjam',
-            'returned' => 'Dikembalikan',
-            'overdue' => 'Terlambat',
-            default => $state,
-        };
+        return Loan::statusLabel($state);
     }
 
     public static function statusColor(string $state): string
     {
         return match ($state) {
-            'borrowed' => 'info',
-            'returned' => 'success',
-            'overdue' => 'danger',
+            Loan::STATUS_BORROWED => 'info',
+            Loan::STATUS_RETURNED => 'success',
+            Loan::STATUS_OVERDUE => 'danger',
             default => 'gray',
         };
     }
@@ -121,16 +122,16 @@ class LoansTable
     public static function statusIcon(string $state): string
     {
         return match ($state) {
-            'borrowed' => 'heroicon-m-book-open',
-            'returned' => 'heroicon-m-check-circle',
-            'overdue' => 'heroicon-m-exclamation-triangle',
+            Loan::STATUS_BORROWED => 'heroicon-m-book-open',
+            Loan::STATUS_RETURNED => 'heroicon-m-check-circle',
+            Loan::STATUS_OVERDUE => 'heroicon-m-exclamation-triangle',
             default => 'heroicon-m-question-mark-circle',
         };
     }
 
     public static function conditionLabel(Loan $record): string
     {
-        if ($record->status !== 'returned') {
+        if (! $record->isReturned()) {
             return 'Menunggu pengembalian';
         }
 
@@ -149,7 +150,7 @@ class LoansTable
 
     public static function conditionColor(Loan $record): string
     {
-        if ($record->status !== 'returned') {
+        if (! $record->isReturned()) {
             return 'gray';
         }
 
@@ -164,7 +165,7 @@ class LoansTable
 
     public static function conditionIcon(Loan $record): string
     {
-        if ($record->status !== 'returned') {
+        if (! $record->isReturned()) {
             return 'heroicon-m-arrow-path';
         }
 
@@ -179,12 +180,12 @@ class LoansTable
 
     public static function dueDateColor(Loan $record): string
     {
-        if ($record->status === 'returned') {
+        if ($record->isReturned()) {
             return 'success';
         }
 
         return match (true) {
-            $record->due_date->isPast() => 'danger',
+            $record->isOverdue() => 'danger',
             self::isDueSoon($record) => 'warning',
             default => 'gray',
         };
@@ -192,11 +193,11 @@ class LoansTable
 
     public static function dueDateDescription(Loan $record): ?string
     {
-        if ($record->status === 'returned') {
+        if ($record->isReturned()) {
             return 'Pinjaman sudah selesai';
         }
 
-        if ($record->due_date->isPast()) {
+        if ($record->isOverdue()) {
             return 'Segera kembalikan buku';
         }
 
@@ -209,12 +210,12 @@ class LoansTable
 
     public static function dueDateIcon(Loan $record): ?string
     {
-        if ($record->status === 'returned') {
+        if ($record->isReturned()) {
             return 'heroicon-m-check-circle';
         }
 
         return match (true) {
-            $record->due_date->isPast() => 'heroicon-m-exclamation-triangle',
+            $record->isOverdue() => 'heroicon-m-exclamation-triangle',
             self::isDueSoon($record) => 'heroicon-m-clock',
             default => 'heroicon-m-calendar-days',
         };
@@ -228,7 +229,7 @@ class LoansTable
             return $count.' buku • Segera jatuh tempo';
         }
 
-        if ($record->due_date->isPast() && $record->status !== 'returned') {
+        if ($record->isOverdue()) {
             return $count.' buku • Terlambat dikembalikan';
         }
 
@@ -251,7 +252,7 @@ class LoansTable
 
     public static function isDueSoon(Loan $record): bool
     {
-        if ($record->status === 'returned' || $record->due_date->isPast()) {
+        if ($record->isReturned() || $record->isOverdue()) {
             return false;
         }
 

@@ -2,17 +2,17 @@
 
 namespace App\Filament\Admin\Resources\Fines;
 
-use App\Filament\Admin\Resources\Fines\Pages\CreateFine;
-use App\Filament\Admin\Resources\Fines\Pages\EditFine;
 use App\Filament\Admin\Resources\Fines\Pages\ListFines;
 use App\Filament\Admin\Resources\Fines\Schemas\FineForm;
 use App\Filament\Admin\Resources\Fines\Tables\FinesTable;
 use App\Models\Fine;
+use App\Models\Loan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class FineResource extends Resource
@@ -50,8 +50,18 @@ class FineResource extends Resource
     {
         return [
             'index' => ListFines::route('/'),
-            'create' => CreateFine::route('/create'),
-            'edit' => EditFine::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        Loan::syncOverdueFines();
+
+        return parent::getEloquentQuery();
     }
 }
