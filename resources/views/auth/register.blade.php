@@ -22,10 +22,11 @@
                         <div class="space-y-3">
                             <h2
                                 class="text-2xl font-semibold tracking-tight text-card-foreground sm:text-[1.75rem]">
-                                Masuk ke akun Anda
+                                Daftarkan akun Anda
                             </h2>
                             <p class="text-sm leading-6 text-muted-foreground">
-                                Gunakan NIS atau email beserta kata sandi yang sudah terdaftar di SIPUS.
+                                Lengkapi data siswa untuk mengajukan akun SIPUS. Setelah itu, akun akan menunggu
+                                persetujuan petugas perpustakaan.
                             </p>
                         </div>
 
@@ -66,12 +67,21 @@
                                     type="password" placeholder="Ulangi kata sandi" autocomplete="new-password"
                                     required />
                             </div>
-                            <a href="/login">
-                                <x-ui.button type="submit" variant="primary" size="lg" full-width>
-                                    Daftar
-                                </x-ui.button>
-                                </a>
+
+                            <x-ui.button type="submit" variant="primary" size="lg" full-width>
+                                Daftar
+                            </x-ui.button>
                         </form>
+
+                        <div class="mt-6 text-sm">
+                            <p class="text-muted-foreground">
+                                Sudah punya akun?
+                                <a href="{{ route('login') }}"
+                                    class="font-medium text-primary transition-colors duration-200 hover:text-foreground">
+                                    Masuk
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </x-ui.card>
             </div>
