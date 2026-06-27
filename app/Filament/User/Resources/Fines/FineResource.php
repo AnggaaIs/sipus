@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Fines;
+namespace App\Filament\User\Resources\Fines;
 
-use App\Filament\Admin\Resources\Fines\Pages\ListFines;
-use App\Filament\Admin\Resources\Fines\Schemas\FineForm;
-use App\Filament\Admin\Resources\Fines\Tables\FinesTable;
+use App\Filament\User\Resources\Fines\Pages\ListFines;
+use App\Filament\User\Resources\Fines\Schemas\FineForm;
+use App\Filament\User\Resources\Fines\Tables\FinesTable;
 use App\Models\Fine;
 use App\Models\Loan;
 use BackedEnum;
@@ -13,6 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
 class FineResource extends Resource
@@ -21,11 +22,11 @@ class FineResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sirkulasi';
+    protected static string|UnitEnum|null $navigationGroup = 'Perpustakaan Saya';
 
-    protected static ?string $modelLabel = 'Denda';
+    protected static ?string $modelLabel = 'Denda Saya';
 
-    protected static ?string $pluralModelLabel = 'Denda';
+    protected static ?string $pluralModelLabel = 'Denda Saya';
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -62,6 +63,7 @@ class FineResource extends Resource
     {
         Loan::syncOverdueFines();
 
-        return parent::getEloquentQuery();
+        return parent::getEloquentQuery()
+            ->whereBelongsTo(Auth::user());
     }
 }

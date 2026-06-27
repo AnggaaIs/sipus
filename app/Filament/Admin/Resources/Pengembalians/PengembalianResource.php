@@ -37,7 +37,7 @@ class PengembalianResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereIn('status', ['borrowed', 'overdue']);
+            ->active();
     }
 
     public static function form(Schema $schema): Schema
@@ -60,5 +60,10 @@ class PengembalianResource extends Resource
         return [
             'index' => ListPengembalians::route('/'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }

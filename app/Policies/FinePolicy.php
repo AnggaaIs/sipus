@@ -28,7 +28,7 @@ class FinePolicy
      */
     public function create(User $user): bool
     {
-        return $this->isActiveAdmin($user);
+        return false;
     }
 
     /**
@@ -44,7 +44,7 @@ class FinePolicy
      */
     public function delete(User $user, Fine $fine): bool
     {
-        return $this->isActiveAdmin($user);
+        return false;
     }
 
     /**
@@ -52,7 +52,7 @@ class FinePolicy
      */
     public function restore(User $user, Fine $fine): bool
     {
-        return $this->isActiveAdmin($user);
+        return false;
     }
 
     /**

@@ -3,13 +3,11 @@
 namespace App\Filament\Admin\Resources\Loans\Tables;
 
 use App\Models\Loan;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class LoansTable
 {
@@ -30,7 +28,7 @@ class LoansTable
                     ->expandableLimitedList(),
                 TextColumn::make('loan_date')
                     ->label('Tanggal pinjam')
-                    ->date()
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('due_date')
                     ->label('Jatuh tempo')
@@ -42,17 +40,13 @@ class LoansTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->label('Status')
+                    ->state(fn (Loan $record): string => $record->resolvedStatus())
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'borrowed' => 'Dipinjam',
-                        'returned' => 'Dikembalikan',
-                        'overdue' => 'Terlambat',
-                        default => $state,
-                    })
+                    ->formatStateUsing(fn (string $state): string => Loan::statusLabel($state))
                     ->colors([
-                        'info' => 'borrowed',
-                        'success' => 'returned',
-                        'danger' => 'overdue',
+                        'info' => Loan::STATUS_BORROWED,
+                        'success' => Loan::STATUS_RETURNED,
+                        'danger' => Loan::STATUS_OVERDUE,
                     ]),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -67,38 +61,17 @@ class LoansTable
             ->filters([
                 SelectFilter::make('status')
                     ->label('Status')
-                    ->options([
-                        'borrowed' => 'Dipinjam',
-                        'returned' => 'Dikembalikan',
-                        'overdue' => 'Terlambat',
-                    ]),
+                    ->options(Loan::statusOptions())
+                    ->query(function (Builder $query, array $data): void {
+                        match ($data['value'] ?? null) {
+                            Loan::STATUS_BORROWED => $query->currentlyBorrowed(),
+                            Loan::STATUS_RETURNED => $query->returned(),
+                            Loan::STATUS_OVERDUE => $query->currentlyOverdue(),
+                            default => null,
+                        };
+                    }),
             ])
             ->recordActions([
-                Action::make('returnBooks')
-                    ->label('Kembalikan')
-                    ->icon('heroicon-o-arrow-uturn-left')
-                    ->color('success')
-                    ->visible(fn (Loan $record): bool => $record->status !== 'returned')
-                    ->schema([
-                        Select::make('condition_on_return')
-                            ->label('Kondisi buku')
-                            ->options([
-                                'good' => 'Baik',
-                                'damaged' => 'Rusak',
-                                'lost' => 'Hilang',
-                            ])
-                            ->default('good')
-                            ->required(),
-                    ])
-                    ->requiresConfirmation()
-                    ->action(function (Loan $record, array $data): void {
-                        $record->returnBooks($data['condition_on_return']);
-
-                        Notification::make()
-                            ->success()
-                            ->title('Buku berhasil dikembalikan')
-                            ->send();
-                    }),
                 EditAction::make(),
             ])
             ->toolbarActions([]);

@@ -10,7 +10,6 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Buat 1 admin tetap supaya bisa login
         User::factory()->admin()->create([
             'name'      => 'Admin SIPUS',
             'full_name' => 'Administrator SIPUS',

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\LoanFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +27,21 @@ class Loan extends Model
     /** @use HasFactory<LoanFactory> */
     use HasFactory;
 
+    public const STATUS_BORROWED = 'borrowed';
+
+    public const STATUS_RETURNED = 'returned';
+
+    public const STATUS_OVERDUE = 'overdue';
+
+    public const DEFAULT_FINE_AMOUNT_PER_DAY = 1000;
+
+    protected static function booted(): void
+    {
+        static::saving(function (Loan $loan): void {
+            $loan->normalizeLifecycleState();
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -41,9 +57,174 @@ class Loan extends Model
         return $this->hasOne(Fine::class);
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public static function statusOptions(): array
+    {
+        return [
+            self::STATUS_BORROWED => 'Dipinjam',
+            self::STATUS_RETURNED => 'Dikembalikan',
+            self::STATUS_OVERDUE => 'Terlambat',
+        ];
+    }
+
+    public static function statusLabel(string $state): string
+    {
+        return self::statusOptions()[$state] ?? $state;
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->whereNull('returned_at');
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeReturned(Builder $query): Builder
+    {
+        return $query->whereNotNull('returned_at');
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeCurrentlyBorrowed(Builder $query): Builder
+    {
+        return $query
+            ->active()
+            ->whereDate('due_date', '>=', today());
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeCurrentlyOverdue(Builder $query): Builder
+    {
+        return $query
+            ->active()
+            ->whereDate('due_date', '<', today());
+    }
+
+    public function resolvedStatus(): string
+    {
+        if ($this->returned_at !== null) {
+            return self::STATUS_RETURNED;
+        }
+
+        $dueDate = $this->due_date?->copy() ?? today()->addDays(7);
+
+        return $dueDate->endOfDay()->isPast()
+            ? self::STATUS_OVERDUE
+            : self::STATUS_BORROWED;
+    }
+
+    public function isReturned(): bool
+    {
+        return $this->resolvedStatus() === self::STATUS_RETURNED;
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->resolvedStatus() === self::STATUS_OVERDUE;
+    }
+
+    public function overdueDays(): int
+    {
+        if ($this->returned_at !== null) {
+            $comparisonDate = $this->returned_at->copy()->startOfDay();
+        } else {
+            $comparisonDate = today()->startOfDay();
+        }
+
+        $dueDate = $this->due_date?->copy()?->startOfDay();
+
+        if ($dueDate === null || $comparisonDate->lessThanOrEqualTo($dueDate)) {
+            return 0;
+        }
+
+        return $dueDate->diffInDays($comparisonDate);
+    }
+
+    public function syncFine(int $amountPerDay = self::DEFAULT_FINE_AMOUNT_PER_DAY): void
+    {
+        $overdueDays = $this->overdueDays();
+        $fine = $this->fine()->first();
+        $totalAmount = $overdueDays * $amountPerDay;
+
+        if ($overdueDays <= 0) {
+            if ($fine !== null && $fine->status === 'unpaid') {
+                $fine->delete();
+            }
+
+            return;
+        }
+
+        $isCurrentFineAlreadyPaid = $fine !== null
+            && $fine->status === 'paid'
+            && $fine->overdue_days === $overdueDays
+            && (float) $fine->total_amount === (float) $totalAmount;
+
+        $this->fine()->updateOrCreate(
+            [],
+            [
+                'user_id' => $this->user_id,
+                'overdue_days' => $overdueDays,
+                'amount_per_day' => $amountPerDay,
+                'total_amount' => $totalAmount,
+                'status' => $isCurrentFineAlreadyPaid ? 'paid' : 'unpaid',
+                'paid_at' => $isCurrentFineAlreadyPaid ? $fine?->paid_at : null,
+            ],
+        );
+    }
+
+    public static function syncOverdueFines(int $amountPerDay = self::DEFAULT_FINE_AMOUNT_PER_DAY): void
+    {
+        static::query()
+            ->with('fine')
+            ->where(function (Builder $query): void {
+                $query->currentlyOverdue()->orWhereNotNull('returned_at');
+            })
+            ->chunkById(100, function ($loans) use ($amountPerDay): void {
+                foreach ($loans as $loan) {
+                    $loan->syncFine($amountPerDay);
+                }
+            });
+    }
+
+    public function hasOutstandingFine(): bool
+    {
+        $this->loadMissing('fine');
+
+        return $this->fine !== null && $this->fine->status === 'unpaid';
+    }
+
+    public function settleFine(int $amountPerDay = self::DEFAULT_FINE_AMOUNT_PER_DAY): void
+    {
+        $this->syncFine($amountPerDay);
+        $this->refresh()->load('fine');
+
+        if ($this->fine === null) {
+            return;
+        }
+
+        $this->fine->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+    }
+
     public function checkoutBooks(): void
     {
-        if ($this->status !== 'borrowed') {
+        if ($this->isReturned()) {
             return;
         }
 
@@ -71,10 +252,19 @@ class Loan extends Model
         });
     }
 
-    public function returnBooks(string $conditionOnReturn = 'good', int $amountPerDay = 1000): void
+    public function returnBooks(string $conditionOnReturn = 'good', int $amountPerDay = self::DEFAULT_FINE_AMOUNT_PER_DAY): void
     {
-        if ($this->status === 'returned') {
+        if ($this->isReturned()) {
             return;
+        }
+
+        $this->syncFine($amountPerDay);
+        $this->refresh()->load('fine');
+
+        if ($this->hasOutstandingFine()) {
+            throw ValidationException::withMessages([
+                'fine' => 'Denda keterlambatan harus dilunasi sebelum pengembalian diproses.',
+            ]);
         }
 
         DB::transaction(function () use ($conditionOnReturn, $amountPerDay): void {
@@ -97,29 +287,13 @@ class Loan extends Model
                 ]);
             }
 
-            $dueDate = $this->due_date->copy()->startOfDay();
-            $returnedDate = $returnedAt->copy()->startOfDay();
-
-            $overdueDays = $returnedDate->greaterThan($dueDate)
-                ? $dueDate->diffInDays($returnedDate)
-                : 0;
-
             $this->update([
                 'returned_at' => $returnedAt,
-                'status' => 'returned',
+                'status' => self::STATUS_RETURNED,
             ]);
 
-            if ($overdueDays > 0) {
-                $this->fine()->updateOrCreate(
-                    ['user_id' => $this->user_id],
-                    [
-                        'overdue_days' => $overdueDays,
-                        'amount_per_day' => $amountPerDay,
-                        'total_amount' => $overdueDays * $amountPerDay,
-                        'status' => 'unpaid',
-                    ],
-                );
-            }
+            $this->refresh();
+            $this->syncFine($amountPerDay);
         });
     }
 
@@ -130,8 +304,24 @@ class Loan extends Model
     {
         return [
             'due_date' => 'date',
-            'loan_date' => 'date',
+            'loan_date' => 'datetime',
             'returned_at' => 'datetime',
         ];
+    }
+
+    protected function normalizeLifecycleState(): void
+    {
+        $loanDate = $this->loan_date?->copy() ?? now();
+
+        $this->loan_date = $loanDate;
+        $this->due_date ??= $loanDate->copy()->addDays(7)->toDateString();
+
+        if ($this->returned_at !== null) {
+            $this->status = self::STATUS_RETURNED;
+
+            return;
+        }
+
+        $this->status = $this->resolvedStatus();
     }
 }

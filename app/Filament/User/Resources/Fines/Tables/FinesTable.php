@@ -1,12 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Fines\Tables;
+namespace App\Filament\User\Resources\Fines\Tables;
 
-use App\Models\Fine;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class FinesTable
@@ -56,37 +52,10 @@ class FinesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('updated_at', 'desc')
             ->filters([
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'unpaid' => 'Belum dibayar',
-                        'paid' => 'Lunas',
-                    ]),
+                //
             ])
-            ->recordActions([
-                Action::make('markPaid')
-                    ->label('Tandai lunas')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn (Fine $record): bool => $record->status === 'unpaid')
-                    ->requiresConfirmation()
-                    ->action(function (Fine $record): void {
-                        $record->loan?->syncFine();
-                        $record->refresh();
-
-                        $record->update([
-                            'status' => 'paid',
-                            'paid_at' => now(),
-                        ]);
-
-                        Notification::make()
-                            ->success()
-                            ->title('Denda ditandai lunas')
-                            ->send();
-                    }),
-            ])
+            ->recordActions([])
             ->toolbarActions([]);
     }
 }

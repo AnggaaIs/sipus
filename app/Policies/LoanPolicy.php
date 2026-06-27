@@ -44,7 +44,7 @@ class LoanPolicy
      */
     public function delete(User $user, Loan $loan): bool
     {
-        return $this->isActiveAdmin($user) && $loan->status === 'returned';
+        return $this->isActiveAdmin($user) && $loan->isReturned();
     }
 
     /**
