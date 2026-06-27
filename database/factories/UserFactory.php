@@ -44,7 +44,7 @@ class UserFactory extends Factory
 
     public function admin(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'role' => 'admin',
             'account_status' => 'active',
             'approved_at' => now(),
@@ -54,7 +54,7 @@ class UserFactory extends Factory
 
     public function member(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'role' => 'user',
             'account_status' => 'active',
             'approved_at' => now(),
@@ -64,7 +64,7 @@ class UserFactory extends Factory
 
     public function pendingApproval(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'role' => 'user',
             'account_status' => 'pending',
             'approved_at' => null,
@@ -74,7 +74,7 @@ class UserFactory extends Factory
 
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
