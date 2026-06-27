@@ -16,7 +16,10 @@ test('registration page shows registration copy instead of login copy', function
 });
 
 test('guest registration creates a pending member account and redirects to login', function () {
-    $response = $this->post(route('register.store'), [
+    $csrfToken = 'test-csrf-token';
+
+    $response = $this->withSession(['_token' => $csrfToken])->post(route('register.store'), [
+        '_token' => $csrfToken,
         'full_name' => 'Budi Santoso',
         'nisn' => '1234567890',
         'class' => 'XI IPA 2',
