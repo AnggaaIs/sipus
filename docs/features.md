@@ -172,6 +172,29 @@ lama sampai proses verifikasi selesai.
 - `AdminPanelProvider`
 - `UserPanelProvider`
 
+## Kustomisasi Reset Password
+
+**Tujuan:** Menyematkan email pengguna ke dalam tautan reset password tanpa mengharuskan pengguna mengisi ulang.
+
+**Alur:** `AppServiceProvider` mendaftarkan callback `ResetPassword::createUrlUsing`. Saat tautan reset dibuat, email pengguna dienkripsi dengan `Crypt::encryptString` dan ditambahkan sebagai parameter `identity` pada URL. Saat pengguna membuka tautan, form reset membaca parameter tersebut dan mendekripsi email untuk diisi otomatis.
+
+**Kode terkait:**
+- `app/Providers/AppServiceProvider.php`
+- `app/Http/Controllers/Auth/NewPasswordController.php`
+
+## Middleware RedirectToPublicLogin
+
+**Tujuan:** Mengarahkan pengguna yang belum login ke halaman login publik saat mengakses panel Filament, serta menampilkan 404 jika pengguna tidak memiliki akses ke panel tertentu.
+
+**Aktor:** Semua pengguna yang mencoba mengakses `/admin` atau `/user`.
+
+**Alur:** Middleware memperluas `Filament\Http\Middleware\Authenticate`. Jika pengguna sudah login tetapi tidak memiliki akses ke panel (role tidak cocok atau status akun tidak sesuai), middleware mengembalikan 404. Jika pengguna belum login, middleware mengarahkan ke rute `login`.
+
+**Kode terkait:**
+- `app/Http/Middleware/RedirectToPublicLogin.php`
+- `app/Providers/Filament/AdminPanelProvider.php`
+- `app/Providers/Filament/UserPanelProvider.php`
+
 ## Penanganan Error (404 Not Found)
 
 **Tujuan:** Memberikan umpan balik visual yang ramah ketika pengunjung atau pengguna mengakses rute atau data yang tidak tersedia.
@@ -242,7 +265,9 @@ Mengelola identitas, role, status persetujuan, kelas, dan status aktif akun.
 ### CRUD Peminjaman
 
 Mengelola transaksi peminjaman, anggota, tanggal pinjam/jatuh tempo, item
-buku, dan status transaksi.
+buku, dan status transaksi. Satu peminjaman (`Loan`) dapat memiliki banyak
+item buku (`LoanItem`) yang masing-masing mencatat buku, jumlah, serta
+status pengembalian (`returned_at`, `condition_on_return`).
 
 - Resource: `LoanResource`
 - Path: `/admin/loans`
@@ -301,3 +326,5 @@ Policy tersedia untuk:
 
 Policy melindungi operasi `viewAny`, `view`, `create`, `update`, `delete`,
 `restore`, dan `forceDelete` sesuai kebutuhan model.
+
+

@@ -9,6 +9,7 @@ menggunakan [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Dokumentasi instalasi, fitur, dependency, refactoring, dan GitHub Actions.
+- Dokumentasi middleware RedirectToPublicLogin, kustomisasi AppServiceProvider, detail LoanItem, dan artefak legacy.
 - Workflow CI untuk build aset dan menjalankan Pest.
 - Screenshot panel admin dan fitur CRUD utama.
 - Halaman daftar kategori buku untuk akses pengunjung.

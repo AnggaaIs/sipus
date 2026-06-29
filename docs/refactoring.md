@@ -196,6 +196,47 @@ Pengalaman pengguna yang lebih mulus dan cepat pada seluruh CRUD di panel admin.
 
 **Bukti commit:** `672e9a8`.
 
+## Perubahan Tipe Kolom loan_date
+
+**Sebelum**
+
+Kolom `loan_date` pada tabel `loans` bertipe `date`.
+
+**Masalah**
+
+Waktu peminjaman yang presisi (termasuk jam dan menit) tidak dapat dicatat.
+
+**Perubahan**
+
+Tipe kolom `loan_date` diubah dari `date` menjadi `datetime` melalui migrasi `2026_06_27_040243`.
+
+**Alasan**
+
+Mendukung pencatatan waktu peminjaman yang lebih akurat.
+
+**Dampak**
+
+Seluruh query dan form yang menampilkan `loan_date` kini menyertakan informasi jam dan menit.
+
+**Bukti commit:** migrasi `2026_06_27_040243_alter_loan_date_column_on_loans_table`.
+
+## Identifikasi Dead Code
+
+**Temuan**
+
+Dua resource controller ditemukan dalam kondisi tidak aktif:
+
+- `app/Http/Controllers/FineController.php` — seluruh method kosong, tidak terdaftar di route manapun.
+- `app/Http/Controllers/ReturnsController.php` — seluruh method kosong, mereferensi model `Returns` yang sudah tidak ada di basis kode.
+
+**Masalah**
+
+File tanpa fungsi menambah beban maintenance dan membingungkan pengembang baru.
+
+**Rekomendasi**
+
+Kedua controller dapat dihapus pada refactoring berikutnya setelah dipastikan tidak ada dependensi dari komponen lain.
+
 ## Rencana Refactoring Berikutnya
 
 - Menghapus method CRUD kosong pada `BookController` atau menggantinya dengan
