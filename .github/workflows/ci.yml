@@ -66,6 +66,9 @@ jobs:
       - name: Verify production caches
         run: php artisan optimize
 
+      - name: Clear config cache before tests
+        run: php artisan config:clear
+
       - name: Run tests
         env:
           PAO_DISABLE: "1"
