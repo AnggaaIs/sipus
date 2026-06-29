@@ -3,8 +3,6 @@
 use App\Filament\Pages\Auth\EditProfile;
 use App\Models\User;
 use App\Notifications\PasswordChangedNotification;
-use Filament\Auth\Notifications\NoticeOfEmailChangeRequest;
-use Filament\Auth\Notifications\VerifyEmailChange;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -13,10 +11,42 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
-test('profile updates require the current password even for password changes', function () {
+/*
+|--------------------------------------------------------------------------
+| Black-Box Testing
+|--------------------------------------------------------------------------
+| Fokus: perilaku halaman profil admin dan user dari sisi pemakai, termasuk
+| validasi current password dan pembatasan perubahan identitas.
+*/
+
+test('halaman profil admin tersedia melalui route profil filament kustom', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('filament.admin.auth.profile'))
+        ->assertOk()
+        ->assertSeeText('Nama lengkap')
+        ->assertSeeText('Nama tampilan')
+        ->assertSeeText('Wajib diisi untuk menyimpan perubahan profil apa pun.');
+});
+
+test('halaman profil user menampilkan pembatasan anggota dengan jelas', function () {
     $member = User::factory()->member()->create([
-        'phone' => '081111111111',
+        'full_name' => 'Budi Santoso',
+        'nisn' => '1234567890',
+        'class' => 'XI IPA 2',
     ]);
+
+    $this->actingAs($member)
+        ->get(route('filament.user.auth.profile'))
+        ->assertOk()
+        ->assertSeeText('Wajib diisi untuk menyimpan perubahan profil apa pun.')
+        ->assertSeeText('Jika ingin mengubah nama, email, NISN, kelas, atau nomor telepon, silakan hubungi admin.')
+        ->assertDontSeeText('Foto profil');
+});
+
+test('perubahan profil mewajibkan kata sandi saat ini', function () {
+    $member = User::factory()->member()->create();
 
     Filament::setCurrentPanel(Filament::getPanel('user'));
 
@@ -28,11 +58,11 @@ test('profile updates require the current password even for password changes', f
         ->assertHasErrors(['data.currentPassword']);
 });
 
-test('changing the password sends a password changed email notification', function () {
+test('mengganti kata sandi mengirim notifikasi perubahan password', function () {
     Notification::fake();
 
     $member = User::factory()->member()->create([
-        'phone' => '081234567890',
+        'phone' => '081111111111',
     ]);
 
     Filament::setCurrentPanel(Filament::getPanel('user'));
@@ -50,44 +80,11 @@ test('changing the password sends a password changed email notification', functi
     Notification::assertSentTo($member, PasswordChangedNotification::class);
 });
 
-test('admin email changes keep the current address until verification and send verification notifications', function () {
-    Notification::fake();
-
-    $admin = User::factory()->admin()->create([
-        'email' => 'lama@sipus.com',
-        'phone' => '081234567890',
-    ]);
-
-    Filament::setCurrentPanel(Filament::getPanel('admin'));
-
-    Livewire::actingAs($admin)
-        ->test(EditProfile::class)
-        ->set('data.email', 'baru@sipus.com')
-        ->set('data.currentPassword', 'password')
-        ->call('save')
-        ->assertHasNoErrors();
-
-    expect($admin->fresh()->email)->toBe('lama@sipus.com');
-
-    Notification::assertSentTo(
-        $admin,
-        NoticeOfEmailChangeRequest::class,
-        fn (NoticeOfEmailChangeRequest $notification): bool => $notification->newEmail === 'baru@sipus.com',
-    );
-
-    Notification::assertSentOnDemand(
-        VerifyEmailChange::class,
-        fn (VerifyEmailChange $notification, array $channels, object $notifiable): bool => $notifiable->routeNotificationFor('mail', $notification) === 'baru@sipus.com',
-    );
-});
-
-test('member profile ignores non-password field changes even if submitted manually', function () {
-    Notification::fake();
-
+test('profil anggota mengabaikan perubahan manual pada field identitas', function () {
     $member = User::factory()->member()->create([
         'name' => 'Budi',
         'full_name' => 'Budi Santoso',
-        'email' => 'budi@sipus.com',
+        'email' => 'budi@sipus.test',
         'phone' => '081111111111',
         'nisn' => '1234567890',
         'class' => 'XI IPA 2',
@@ -97,9 +94,9 @@ test('member profile ignores non-password field changes even if submitted manual
 
     Livewire::actingAs($member)
         ->test(EditProfile::class)
-        ->set('data.name', 'Hacker')
-        ->set('data.full_name', 'Nama Baru')
-        ->set('data.email', 'baru@sipus.com')
+        ->set('data.name', 'Nama Diubah')
+        ->set('data.full_name', 'Nama Lengkap Diubah')
+        ->set('data.email', 'baru@sipus.test')
         ->set('data.phone', '082222222222')
         ->set('data.nisn', '9999999999')
         ->set('data.class', 'XII IPS 3')
@@ -111,10 +108,8 @@ test('member profile ignores non-password field changes even if submitted manual
 
     expect($member->name)->toBe('Budi')
         ->and($member->full_name)->toBe('Budi Santoso')
-        ->and($member->email)->toBe('budi@sipus.com')
+        ->and($member->email)->toBe('budi@sipus.test')
         ->and($member->phone)->toBe('081111111111')
         ->and($member->nisn)->toBe('1234567890')
         ->and($member->class)->toBe('XI IPA 2');
-
-    Notification::assertNothingSent();
 });

@@ -18,23 +18,25 @@ class DdcFactory extends Factory
     public function definition(): array
     {
         $classes = [
-            '000' => 'Karya Umum dan Ilmu Komputer',
-            '100' => 'Filsafat dan Psikologi',
-            '200' => 'Agama',
-            '300' => 'Ilmu Sosial',
-            '400' => 'Bahasa',
-            '500' => 'Sains',
-            '600' => 'Teknologi',
-            '700' => 'Seni dan Rekreasi',
-            '800' => 'Sastra',
-            '900' => 'Sejarah dan Geografi',
+            0 => 'Karya Umum dan Ilmu Komputer',
+            1 => 'Filsafat dan Psikologi',
+            2 => 'Agama',
+            3 => 'Ilmu Sosial',
+            4 => 'Bahasa',
+            5 => 'Sains',
+            6 => 'Teknologi',
+            7 => 'Seni dan Rekreasi',
+            8 => 'Sastra',
+            9 => 'Sejarah dan Geografi',
         ];
-        $code = fake()->randomElement(array_keys($classes));
+        $codeNumber = fake()->unique()->numberBetween(0, 999);
+        $code = str_pad((string) $codeNumber, 3, '0', STR_PAD_LEFT);
+        $classIndex = intdiv($codeNumber, 100);
 
         return [
             'code' => $code,
-            'name' => $classes[$code],
-            'description' => "Klasifikasi DDC {$code} untuk bidang {$classes[$code]}.",
+            'name' => $classes[$classIndex],
+            'description' => "Klasifikasi DDC {$code} untuk bidang {$classes[$classIndex]}.",
         ];
     }
 }

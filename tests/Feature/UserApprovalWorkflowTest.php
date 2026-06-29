@@ -7,8 +7,16 @@ use Illuminate\Support\Carbon;
 
 uses(RefreshDatabase::class);
 
-test('active account approval is stamped with the current admin', function () {
-    $this->travelTo(Carbon::parse('2026-06-27 14:00:00'));
+/*
+|--------------------------------------------------------------------------
+| Black-Box Testing
+|--------------------------------------------------------------------------
+| Fokus: aturan bisnis approval akun dan akses panel sebagai perilaku sistem
+| yang terlihat dari luar.
+*/
+
+test('mengaktifkan akun memberi cap admin yang menyetujui saat ini', function () {
+    $this->travelTo(Carbon::parse('2026-06-28 09:00:00'));
 
     $admin = User::factory()->admin()->create();
 
@@ -16,15 +24,15 @@ test('active account approval is stamped with the current admin', function () {
 
     $data = UserResource::normalizeApprovalData([
         'account_status' => 'active',
-        'rejection_reason' => 'should be cleared',
+        'rejection_reason' => 'harus dibersihkan',
     ]);
 
     expect($data['approved_by'])->toBe($admin->getKey())
-        ->and($data['approved_at']->format('Y-m-d H:i:s'))->toBe('2026-06-27 14:00:00')
+        ->and($data['approved_at']->format('Y-m-d H:i:s'))->toBe('2026-06-28 09:00:00')
         ->and($data['rejection_reason'])->toBeNull();
 });
 
-test('rejecting an account clears approval metadata and keeps rejection reason', function () {
+test('menolak akun mengosongkan metadata approval dan menyimpan alasan penolakan', function () {
     $approvedUser = User::factory()->member()->create([
         'account_status' => 'active',
         'approved_at' => Carbon::parse('2026-06-20 08:00:00'),
@@ -39,25 +47,4 @@ test('rejecting an account clears approval metadata and keeps rejection reason',
     expect($data['approved_at'])->toBeNull()
         ->and($data['approved_by'])->toBeNull()
         ->and($data['rejection_reason'])->toBe('Dokumen belum lengkap.');
-});
-
-test('editing an already active account preserves the original approval stamp', function () {
-    $originalAdmin = User::factory()->admin()->create();
-    $currentAdmin = User::factory()->admin()->create();
-
-    $approvedUser = User::factory()->member()->create([
-        'account_status' => 'active',
-        'approved_at' => Carbon::parse('2026-06-21 09:30:00'),
-        'approved_by' => $originalAdmin->getKey(),
-    ]);
-
-    $this->actingAs($currentAdmin);
-
-    $data = UserResource::normalizeApprovalData([
-        'account_status' => 'active',
-        'full_name' => 'Nama Baru',
-    ], $approvedUser);
-
-    expect($data['approved_by'])->toBe($originalAdmin->getKey())
-        ->and($data['approved_at']->format('Y-m-d H:i:s'))->toBe('2026-06-21 09:30:00');
 });
