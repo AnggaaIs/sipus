@@ -69,9 +69,10 @@ https://github.com/AnggaaIs/sipus/actions
 
 Badge CI ditampilkan pada README:
 
-```markdown
-[![CI](https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml/badge.svg)](
-https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml)
+```html
+<a href="https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml">
+  <img src="https://github.com/AnggaaIs/sipus/actions/workflows/ci.yml/badge.svg" alt="CI">
+</a>
 ```
 
 Screenshot hasil workflow dapat ditambahkan setelah workflow pertama selesai:

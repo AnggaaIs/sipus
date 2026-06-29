@@ -55,7 +55,7 @@ binding, lalu menampilkan detail buku.
 
 **Route dan kode terkait:**
 
-- `GET /buku/{book}`
+- `GET /buku/{book:slug}`
 - `BookController@show`
 - `resources/views/books/show.blade.php`
 
