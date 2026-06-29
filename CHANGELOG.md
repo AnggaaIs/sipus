@@ -6,6 +6,8 @@ menggunakan [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-29
+
 ### Added
 
 - Dokumentasi instalasi, fitur, dependency, refactoring, dan GitHub Actions.
@@ -66,7 +68,8 @@ menggunakan [Semantic Versioning](https://semver.org/).
 - Struktur database perpustakaan, model Eloquent, factory, dan seeder.
 - Panel admin Filament dan resource CRUD awal.
 
-[Unreleased]: https://github.com/AnggaaIs/sipus/compare/main...HEAD
+[Unreleased]: https://github.com/AnggaaIs/sipus/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/AnggaaIs/sipus/releases/tag/v0.4.0
 [0.3.0]: https://github.com/AnggaaIs/sipus/commits/main/
 [0.2.0]: https://github.com/AnggaaIs/sipus/commits/374bf0d
 [0.1.0]: https://github.com/AnggaaIs/sipus/commits/a3ae17b
