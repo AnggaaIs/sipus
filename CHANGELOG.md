@@ -70,6 +70,6 @@ menggunakan [Semantic Versioning](https://semver.org/).
 
 [Unreleased]: https://github.com/AnggaaIs/sipus/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/AnggaaIs/sipus/releases/tag/v0.4.0
-[0.3.0]: https://github.com/AnggaaIs/sipus/commits/main/
-[0.2.0]: https://github.com/AnggaaIs/sipus/commits/374bf0d
-[0.1.0]: https://github.com/AnggaaIs/sipus/commits/a3ae17b
+[0.3.0]: https://github.com/AnggaaIs/sipus/releases/tag/v0.3.0
+[0.2.0]: https://github.com/AnggaaIs/sipus/releases/tag/v0.2.0
+[0.1.0]: https://github.com/AnggaaIs/sipus/releases/tag/v0.1.0
