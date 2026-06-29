@@ -87,7 +87,7 @@ Pastikan perangkat sudah memiliki:
 
     ```bash
     composer install
-    npm install
+    npm ci
     ```
 
 3. Salin berkas konfigurasi lingkungan dan buat application key.
