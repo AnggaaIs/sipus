@@ -29,7 +29,7 @@ class CategoryFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name) . '-' . fake()->unique()->numerify('##'),
+            'slug' => Str::slug($name).'-'.fake()->unique()->numerify('##'),
             'description' => "Koleksi buku {$name} untuk menambah wawasan dan mendukung kegiatan belajar.",
             'color' => fake()->hexColor(),
         ];

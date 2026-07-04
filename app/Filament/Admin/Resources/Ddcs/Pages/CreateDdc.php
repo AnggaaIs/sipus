@@ -9,7 +9,7 @@ class CreateDdc extends CreateRecord
 {
     protected static string $resource = DdcResource::class;
 
-     protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Author;
 use Database\Factories\BookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -70,7 +69,7 @@ class Book extends Model
 
         $baseUrl = rtrim((string) config('filesystems.disks.covers.url', asset('cover')), '/');
 
-        return $baseUrl . '/' . ltrim($this->cover, '/');
+        return $baseUrl.'/'.ltrim($this->cover, '/');
     }
 
     /**

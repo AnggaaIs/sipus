@@ -18,7 +18,7 @@ class CategoryForm
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(?string $state, callable $set) => $set('slug', Str::slug($state ?? ''))),
+                    ->afterStateUpdated(fn (?string $state, callable $set) => $set('slug', Str::slug($state ?? ''))),
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)

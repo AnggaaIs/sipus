@@ -9,7 +9,7 @@ class CreateAuthor extends CreateRecord
 {
     protected static string $resource = AuthorResource::class;
 
-     protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
