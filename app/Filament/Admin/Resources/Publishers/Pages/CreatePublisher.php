@@ -9,7 +9,7 @@ class CreatePublisher extends CreateRecord
 {
     protected static string $resource = PublisherResource::class;
 
-     protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }

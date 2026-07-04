@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -62,7 +63,7 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
 
     public static function xlsx(): mixed
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(
+        return Excel::download(
             new self,
             'laporan-pengguna.xlsx',
         );

@@ -9,7 +9,7 @@ class CreatePengembalian extends CreateRecord
 {
     protected static string $resource = PengembalianResource::class;
 
-     protected function getRedirectUrl(): string
+    protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }

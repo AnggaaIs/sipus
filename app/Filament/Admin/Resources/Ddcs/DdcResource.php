@@ -29,7 +29,6 @@ class DdcResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'code';
 
-
     public static function form(Schema $schema): Schema
     {
         return DdcForm::configure($schema);

@@ -24,7 +24,7 @@ class BookSeeder extends Seeder
         $publishers = Publisher::query()->get();
 
         Book::factory(30)
-            ->state(fn(): array => [
+            ->state(fn (): array => [
                 'category_id' => $categories->random()->getKey(),
                 'ddc_id' => $ddcs->random()->getKey(),
                 'publisher_id' => $publishers->random()->getKey(),

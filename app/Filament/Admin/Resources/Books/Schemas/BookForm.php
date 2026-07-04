@@ -4,19 +4,13 @@ namespace App\Filament\Admin\Resources\Books\Schemas;
 
 use App\Filament\Admin\Resources\Authors\Schemas\AuthorForm;
 use App\Filament\Admin\Resources\Publishers\Schemas\PublisherForm;
-use App\Models\Author;
 use App\Models\Category;
 use App\Models\Ddc;
-use App\Models\Publisher;
-use App\Services\Books\BookMetadataLookup;
-use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -40,7 +34,7 @@ class BookForm
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(?string $state, callable $set) => $set('slug', Str::slug($state ?? ''))),
+                    ->afterStateUpdated(fn (?string $state, callable $set) => $set('slug', Str::slug($state ?? ''))),
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
@@ -59,7 +53,7 @@ class BookForm
                     ->relationship('ddc', 'code')
                     ->searchable()
                     ->preload()
-                    ->getOptionLabelFromRecordUsing(fn(Ddc $record): string => $record->code . ' - ' . $record->name)
+                    ->getOptionLabelFromRecordUsing(fn (Ddc $record): string => $record->code.' - '.$record->name)
                     ->default(null),
                 Select::make('publisher_id')
                     ->label('Penerbit')
@@ -106,8 +100,8 @@ class BookForm
                     ->label('Sampul Buku')
                     ->image()
                     ->disk('covers')
-                    ->directory(fn(Get $get) => Str::slug(Category::find($get('category_id'))?->name ?? 'uncategorized'))
-                    ->getUploadedFileNameForStorageUsing(fn(Get $get, $file) => Str::slug($get('title') ?? 'cover') . '.' . $file->getClientOriginalExtension())
+                    ->directory(fn (Get $get) => Str::slug(Category::find($get('category_id'))?->name ?? 'uncategorized'))
+                    ->getUploadedFileNameForStorageUsing(fn (Get $get, $file) => Str::slug($get('title') ?? 'cover').'.'.$file->getClientOriginalExtension())
                     ->default(null),
                 TextInput::make('total_copies')
                     ->label('Total Stok')

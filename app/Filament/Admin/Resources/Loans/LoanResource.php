@@ -29,7 +29,6 @@ class LoanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'loan_code';
 
-
     public static function form(Schema $schema): Schema
     {
         return LoanForm::configure($schema);
