@@ -3,18 +3,44 @@
 namespace App\Exports;
 
 use App\Models\Book;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Database\Eloquent\Collection;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class BooksExport implements FromCollection, WithHeadings, WithMapping
+class BooksExport extends BaseExport
 {
+    protected function title(): string
+    {
+        return 'Laporan Data Buku';
+    }
+
+    protected function fileName(): string
+    {
+        return 'laporan-buku';
+    }
+
+    protected function columnCount(): int
+    {
+        return 9;
+    }
+
+    protected function afterSheet(AfterSheet $event, string $lastCol, int $lastRow): void
+    {
+        if ($lastRow < 4) {
+            return;
+        }
+
+        $event->sheet->getDelegate()
+            ->getStyle("A4:A{$lastRow}")
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_TEXT);
+    }
+
     public function collection(): Collection
     {
         return Book::with('authors', 'category', 'ddc', 'publisher')
+            ->when($this->startDate, fn ($q) => $q->whereDate('created_at', '>=', $this->startDate))
+            ->when($this->endDate, fn ($q) => $q->whereDate('created_at', '<=', $this->endDate))
             ->get()
             ->map(fn (Book $book) => (object) [
                 'isbn' => $book->isbn,
@@ -37,7 +63,6 @@ class BooksExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    /** @param object $row */
     public function map($row): array
     {
         return [
@@ -45,21 +70,5 @@ class BooksExport implements FromCollection, WithHeadings, WithMapping
             $row->ddc, $row->publisher, $row->year,
             $row->total_copies, $row->available_copies,
         ];
-    }
-
-    public static function pdf(): mixed
-    {
-        $data = (new self)->collection();
-
-        return Pdf::loadView('pdf.books', ['books' => $data])
-            ->download('laporan-buku.pdf');
-    }
-
-    public static function xlsx(): mixed
-    {
-        return Excel::download(
-            new self,
-            'laporan-buku.xlsx',
-        );
     }
 }

@@ -3,18 +3,45 @@
 namespace App\Exports;
 
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Database\Eloquent\Collection;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
 
-class UsersExport implements FromCollection, WithHeadings, WithMapping
+class UsersExport extends BaseExport
 {
+    protected function title(): string
+    {
+        return 'Laporan Data Pengguna';
+    }
+
+    protected function fileName(): string
+    {
+        return 'laporan-pengguna';
+    }
+
+    protected function columnCount(): int
+    {
+        return 9;
+    }
+
+    protected function statusColumn(): ?string
+    {
+        return 'G';
+    }
+
+    protected function statusColors(): array
+    {
+        return [
+            'Aktif' => 'FF44FF44',
+            'Menunggu' => 'FFFFFF44',
+            'Ditolak' => 'FFFF4444',
+            'Ditangguhkan' => 'FFFF8800',
+        ];
+    }
+
     public function collection(): Collection
     {
         return User::query()
+            ->when($this->startDate, fn ($q) => $q->whereDate('created_at', '>=', $this->startDate))
+            ->when($this->endDate, fn ($q) => $q->whereDate('created_at', '<=', $this->endDate))
             ->get()
             ->map(fn (User $user) => (object) [
                 'nisn' => $user->nisn ?? '-',
@@ -39,11 +66,10 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'NISN', 'Username', 'Nama Lengkap', 'Email', 'Kelas',
-            'Peran', 'Status', 'Disetujui Pada', 'Telepon',
+            'Peran', 'Status Akun', 'Disetujui Pada', 'Telepon',
         ];
     }
 
-    /** @param object $row */
     public function map($row): array
     {
         return [
@@ -51,21 +77,5 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
             $row->class, $row->role, $row->account_status,
             $row->approved_at, $row->phone,
         ];
-    }
-
-    public static function pdf(): mixed
-    {
-        $data = (new self)->collection();
-
-        return Pdf::loadView('pdf.users', ['users' => $data])
-            ->download('laporan-pengguna.pdf');
-    }
-
-    public static function xlsx(): mixed
-    {
-        return Excel::download(
-            new self,
-            'laporan-pengguna.xlsx',
-        );
     }
 }
