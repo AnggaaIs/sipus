@@ -4,9 +4,11 @@ namespace App\Filament\Admin\Resources\Loans\Tables;
 
 use App\Exports\LoansExport;
 use App\Models\Loan;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\Action;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -79,22 +81,43 @@ class LoansTable
             ])
             ->toolbarActions([
                 Action::make('export')
-                    ->label('Export')
+                    ->label('Export Excel')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('gray')
                     ->form([
-                        Select::make('format')
-                            ->label('Format')
+                        Select::make('period')
+                            ->label('Rentang Waktu')
                             ->options([
-                                'pdf' => 'PDF',
-                                'xlsx' => 'Excel (XLSX)',
+                                'all' => 'Semua',
+                                '1_week' => '1 Minggu terakhir',
+                                '1_month' => '1 Bulan terakhir',
+                                '3_months' => '3 Bulan terakhir',
+                                '6_months' => '6 Bulan terakhir',
                             ])
-                            ->required(),
+                            ->default('all')
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, ?string $state): void {
+                                $dates = match ($state) {
+                                    '1_week' => [now()->subWeek()->toDateString(), now()->toDateString()],
+                                    '1_month' => [now()->subMonth()->toDateString(), now()->toDateString()],
+                                    '3_months' => [now()->subMonths(3)->toDateString(), now()->toDateString()],
+                                    '6_months' => [now()->subMonths(6)->toDateString(), now()->toDateString()],
+                                    default => [null, null],
+                                };
+                                $set('start_date', $dates[0]);
+                                $set('end_date', $dates[1]);
+                            }),
+                        DatePicker::make('start_date')
+                            ->label('Dari tanggal')
+                            ->displayFormat('d/m/Y'),
+                        DatePicker::make('end_date')
+                            ->label('Sampai tanggal')
+                            ->displayFormat('d/m/Y'),
                     ])
-                    ->action(fn (array $data) => match ($data['format']) {
-                        'pdf' => LoansExport::pdf(),
-                        'xlsx' => LoansExport::xlsx(),
-                    }),
+                    ->action(fn (array $data) => LoansExport::xlsx(
+                        $data['start_date'] ?? null,
+                        $data['end_date'] ?? null,
+                    )),
             ]);
     }
 }

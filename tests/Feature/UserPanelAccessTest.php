@@ -1,5 +1,9 @@
 <?php
 
+use App\Exports\BooksExport;
+use App\Exports\FinesExport;
+use App\Exports\LoansExport;
+use App\Exports\UsersExport;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
@@ -8,6 +12,7 @@ use App\Models\Loan;
 use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Maatwebsite\Excel\Facades\Excel;
 
 uses(RefreshDatabase::class);
 
@@ -119,4 +124,68 @@ test('anggota pending ditolak dan nonaktif tidak bisa membuka panel user', funct
             ->get(route('filament.user.auth.profile'))
             ->assertForbidden();
     }
+});
+
+test('tombol export excel muncul di halaman loans admin', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('filament.admin.resources.loans.index'))
+        ->assertSee('Export');
+});
+
+test('tombol export excel muncul di halaman books admin', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('filament.admin.resources.books.index'))
+        ->assertSee('Export');
+});
+
+test('tombol export excel muncul di halaman fines admin', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('filament.admin.resources.fines.index'))
+        ->assertSee('Export');
+});
+
+test('tombol export excel muncul di halaman users admin', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('filament.admin.resources.users.index'))
+        ->assertSee('Export');
+});
+
+test('export loans benar-benar mendownload file excel', function () {
+    Excel::fake();
+
+    LoansExport::xlsx(null, null);
+
+    Excel::assertDownloaded('laporan-peminjaman.xlsx');
+});
+
+test('export books benar-benar mendownload file excel', function () {
+    Excel::fake();
+
+    BooksExport::xlsx(null, null);
+
+    Excel::assertDownloaded('laporan-buku.xlsx');
+});
+
+test('export fines benar-benar mendownload file excel', function () {
+    Excel::fake();
+
+    FinesExport::xlsx(null, null);
+
+    Excel::assertDownloaded('laporan-denda.xlsx');
+});
+
+test('export users benar-benar mendownload file excel', function () {
+    Excel::fake();
+
+    UsersExport::xlsx(null, null);
+
+    Excel::assertDownloaded('laporan-pengguna.xlsx');
 });
