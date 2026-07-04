@@ -3,8 +3,10 @@
 namespace App\Filament\Admin\Resources\Fines\Tables;
 
 use App\Models\Fine;
-use Filament\Actions\Action;
+use App\Exports\FinesExport;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -87,6 +89,24 @@ class FinesTable
                             ->send();
                     }),
             ])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                Action::make('export')
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->form([
+                        Select::make('format')
+                            ->label('Format')
+                            ->options([
+                                'pdf' => 'PDF',
+                                'xlsx' => 'Excel (XLSX)',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(fn (array $data) => match ($data['format']) {
+                        'pdf' => FinesExport::pdf(),
+                        'xlsx' => FinesExport::xlsx(),
+                    }),
+            ]);
     }
 }

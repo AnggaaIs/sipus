@@ -2,8 +2,11 @@
 
 namespace App\Filament\Admin\Resources\Loans\Tables;
 
+use App\Exports\LoansExport;
 use App\Models\Loan;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -74,6 +77,24 @@ class LoansTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                Action::make('export')
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->form([
+                        Select::make('format')
+                            ->label('Format')
+                            ->options([
+                                'pdf' => 'PDF',
+                                'xlsx' => 'Excel (XLSX)',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(fn (array $data) => match ($data['format']) {
+                        'pdf' => LoansExport::pdf(),
+                        'xlsx' => LoansExport::xlsx(),
+                    }),
+            ]);
     }
 }

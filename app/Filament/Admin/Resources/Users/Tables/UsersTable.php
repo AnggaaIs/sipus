@@ -8,6 +8,9 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use App\Exports\UsersExport;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -96,6 +99,23 @@ class UsersTable
                 EditAction::make(),
             ])
             ->toolbarActions([
+                Action::make('export')
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->form([
+                        Select::make('format')
+                            ->label('Format')
+                            ->options([
+                                'pdf' => 'PDF',
+                                'xlsx' => 'Excel (XLSX)',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(fn (array $data) => match ($data['format']) {
+                        'pdf' => UsersExport::pdf(),
+                        'xlsx' => UsersExport::xlsx(),
+                    }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

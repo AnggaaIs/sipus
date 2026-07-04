@@ -9,7 +9,10 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
+use App\Exports\BooksExport;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -89,6 +92,23 @@ class BooksTable
                 ForceDeleteAction::make(),
             ])
             ->toolbarActions([
+                Action::make('export')
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->form([
+                        Select::make('format')
+                            ->label('Format')
+                            ->options([
+                                'pdf' => 'PDF',
+                                'xlsx' => 'Excel (XLSX)',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(fn (array $data) => match ($data['format']) {
+                        'pdf' => BooksExport::pdf(),
+                        'xlsx' => BooksExport::xlsx(),
+                    }),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
