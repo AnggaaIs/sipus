@@ -286,6 +286,37 @@ Mengelola proses pengembalian buku dari transaksi peminjaman.
 - Resource: `PengembalianResource`
 - Path: `/admin/pengembalians`
 
+### Export Laporan Excel
+
+Mengunduh data resource ke file Excel (.xlsx) dengan filter rentang waktu.
+
+**Aktor:** Admin aktif.
+
+**Fitur per resource:**
+- **Loans** — `LoansExport`, tombol toolbar di halaman daftar peminjaman
+- **Books** — `BooksExport`, tombol toolbar di halaman daftar buku
+- **Fines** — `FinesExport`, tombol toolbar di halaman daftar denda
+- **Users** — `UsersExport`, tombol toolbar di halaman daftar pengguna
+
+**Filter waktu:** Semua, 1 Minggu, 1 Bulan, 3 Bulan, 6 Bulan, atau kustom via DatePicker.
+
+**Kode terkait:**
+- `app/Exports/LoansExport.php`
+- `app/Exports/BooksExport.php`
+- `app/Exports/FinesExport.php`
+- `app/Exports/UsersExport.php`
+
+### Widget Dashboard Admin
+
+Dashboard admin menampilkan widget kustom menggantikan widget bawaan Filament.
+
+- `AdminStatsOverview` — 5 kartu statistik: Total Buku, Anggota Aktif, Peminjaman Aktif, Perlu Disetujui, Denda Belum Dibayar
+- `PendingUsersWidget` — Tabel 5 anggota terbaru dengan status `pending`, tombol aksi menuju halaman edit pengguna
+
+**Kode terkait:**
+- `app/Filament/Admin/Widgets/AdminStatsOverview.php`
+- `app/Filament/Admin/Widgets/PendingUsersWidget.php`
+
 ## Panel User
 
 **Tujuan:** Menjadi area layanan khusus pengguna.
@@ -301,9 +332,16 @@ Panel user saat ini sudah menyediakan:
 - Daftar denda pribadi melalui resource `FineResource` pada path
   `/user/fines`.
 - Halaman profil kustom untuk mengganti kata sandi secara mandiri.
+- Dashboard dengan widget kustom:
+  - `MyActiveLoansWidget` — tabel peminjaman yang sedang berlangsung (status borrowed/overdue), maksimal 5 baris
+  - `MyFinesWidget` — kartu total denda yang belum dibayar
 
 User tidak dapat membuat, mengubah, atau menghapus data peminjaman dan denda
 dari panel ini. Resource hanya menampilkan data milik user yang sedang login.
+
+**Kode terkait widget:**
+- `app/Filament/User/Widgets/MyActiveLoansWidget.php`
+- `app/Filament/User/Widgets/MyFinesWidget.php`
 
 ## Authorization dan Policy
 
