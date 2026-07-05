@@ -4,14 +4,22 @@ use App\Exports\BooksExport;
 use App\Exports\FinesExport;
 use App\Exports\LoansExport;
 use App\Exports\UsersExport;
+use App\Filament\Admin\Widgets\AdminStatsOverview;
+use App\Filament\Admin\Widgets\PendingUsersWidget;
+use App\Filament\User\Widgets\MyActiveLoansWidget;
+use App\Filament\User\Widgets\MyFinesWidget;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Ddc;
+use App\Models\Fine;
 use App\Models\Loan;
+use App\Models\LoanItem;
 use App\Models\Publisher;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Maatwebsite\Excel\Facades\Excel;
 
 uses(RefreshDatabase::class);
@@ -188,4 +196,54 @@ test('export users benar-benar mendownload file excel', function () {
     UsersExport::xlsx(null, null);
 
     Excel::assertDownloaded('laporan-pengguna.xlsx');
+});
+
+test('widget dashboard admin menampilkan statistik dan anggota perlu disetujui', function () {
+    $admin = User::factory()->admin()->create();
+    $member = User::factory()->member()->create();
+    $pendingUser = User::factory()->pendingApproval()->create();
+    $book = Book::factory()->create();
+    $loan = Loan::factory()->create(['user_id' => $member->getKey()]);
+    LoanItem::factory()->create(['loan_id' => $loan->getKey(), 'book_id' => $book->getKey()]);
+
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+    Livewire::actingAs($admin)
+        ->test(AdminStatsOverview::class)
+        ->assertSee('Total Buku')
+        ->assertSee('1')
+        ->assertSee('Perlu Disetujui')
+        ->assertSee('1')
+        ->assertSee('Peminjaman Aktif')
+        ->assertSee('1');
+
+    Livewire::actingAs($admin)
+        ->test(PendingUsersWidget::class)
+        ->assertSee($pendingUser->full_name);
+});
+
+test('widget dashboard user menampilkan peminjaman aktif dan total denda', function () {
+    $member = User::factory()->member()->create();
+    $book = Book::factory()->create();
+    $loan = Loan::factory()->create(['user_id' => $member->getKey()]);
+    LoanItem::factory()->create(['loan_id' => $loan->getKey(), 'book_id' => $book->getKey()]);
+    Fine::factory()->create([
+        'user_id' => $member->getKey(),
+        'loan_id' => $loan->getKey(),
+        'status' => 'unpaid',
+        'total_amount' => 5000,
+    ]);
+
+    Filament::setCurrentPanel(Filament::getPanel('user'));
+
+    Livewire::actingAs($member)
+        ->test(MyActiveLoansWidget::class)
+        ->assertSee($loan->loan_code)
+        ->assertSee($book->title);
+
+    Livewire::actingAs($member)
+        ->test(MyFinesWidget::class)
+        ->assertSee('Total Denda')
+        ->assertSee('Rp')
+        ->assertSee('5.000');
 });
