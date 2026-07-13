@@ -136,6 +136,38 @@
 
     </section>
 
+    {{-- BUKU PALING SERING DIPINJAM --}}
+    <section class="bg-background px-4 py-20 sm:px-6 lg:px-8">
+
+        <div class="mx-auto max-w-7xl space-y-10">
+
+            <x-home.section-heading
+                eyebrow="Favorit Pembaca"
+                icon="fire"
+                title="Buku Paling Sering Dipinjam"
+                description="Koleksi yang paling banyak beredar di perpustakaan dan paling sering dipilih pembaca." />
+
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+
+                @forelse ($mostBorrowedBooks ?? [] as $book)
+                    <x-books.book-card
+                        :book="$book"
+                        meta-label="Total dipinjam"
+                        :meta-value="(($book->loan_items_sum_quantity ?? null) !== null ? number_format((int) $book->loan_items_sum_quantity) . ' kali' : $book->available_copies . ' salinan tersedia')" />
+                @empty
+                    <x-ui.card>
+                        <p class="text-sm text-muted-foreground">
+                            Belum ada data buku terpopuler.
+                        </p>
+                    </x-ui.card>
+                @endforelse
+
+            </div>
+
+        </div>
+
+    </section>
+
     {{-- CTA --}}
     <section class="bg-background px-4 py-24 sm:px-6 lg:px-8">
 
