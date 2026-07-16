@@ -47,7 +47,7 @@
                 </x-ui.button>
 
                     <x-ui.button
-                        href="#"
+                        href="#tentang"
                         variant="ghost"
                         size="lg"
                         class="border-white text-white hover:bg-white hover:text-primary">
@@ -97,7 +97,7 @@
 
 
     {{-- BUKU TERBARU --}}
-    <section class="border-y border-border bg-card px-4 py-20 sm:px-6 lg:px-8">
+    <section class="border-y border-border bg-card px-4 pb-20 pt-12 sm:px-6 lg:px-8">
 
         <div class="mx-auto max-w-7xl">
 
@@ -166,6 +166,37 @@
 
         </div>
 
+    </section>
+
+    {{-- TENTANG SIPUS --}}
+    <section id="tentang" class="scroll-mt-24 border-y border-border bg-card px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+            <x-home.section-heading
+                eyebrow="Tentang SIPUS"
+                icon="book-open"
+                title="Perpustakaan sekolah, lebih mudah diakses."
+                description="SIPUS adalah Sistem Informasi Perpustakaan SMA Semen Padang yang membantu siswa menemukan koleksi, memantau peminjaman, dan membangun kebiasaan membaca." />
+
+            <div class="grid gap-6 sm:grid-cols-3">
+                <div class="space-y-3 border-t-2 border-primary pt-4">
+                    <x-ui.icon name="magnifying-glass" class="h-6 w-6 text-primary" />
+                    <h3 class="text-lg font-semibold text-card-foreground">Cari koleksi</h3>
+                    <p class="text-sm leading-6 text-muted-foreground">Temukan buku berdasarkan judul, penulis, kategori, atau ISBN.</p>
+                </div>
+
+                <div class="space-y-3 border-t-2 border-primary pt-4">
+                    <x-ui.icon name="clipboard-document-check" class="h-6 w-6 text-primary" />
+                    <h3 class="text-lg font-semibold text-card-foreground">Pantau peminjaman</h3>
+                    <p class="text-sm leading-6 text-muted-foreground">Lihat status peminjaman, tanggal jatuh tempo, dan riwayat buku.</p>
+                </div>
+
+                <div class="space-y-3 border-t-2 border-primary pt-4">
+                    <x-ui.icon name="academic-cap" class="h-6 w-6 text-primary" />
+                    <h3 class="text-lg font-semibold text-card-foreground">Tumbuhkan literasi</h3>
+                    <p class="text-sm leading-6 text-muted-foreground">Akses informasi perpustakaan dalam satu platform yang mudah digunakan.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     {{-- CTA --}}

@@ -48,7 +48,7 @@ test('admin yang aktif bisa login memakai nisn dan diarahkan ke panel admin', fu
     $this->assertAuthenticatedAs($admin);
 });
 
-test('akun pending dan akun nonaktif tidak bisa login', function () {
+test('akun pending ditolak dan nonaktif menampilkan pesan login yang sesuai', function () {
     $pendingMember = User::factory()->pendingApproval()->create([
         'email' => 'pending@sipus.test',
     ]);
@@ -58,15 +58,33 @@ test('akun pending dan akun nonaktif tidak bisa login', function () {
         'is_active' => false,
     ]);
 
+    $rejectedMember = User::factory()->create([
+        'email' => 'rejected@sipus.test',
+        'account_status' => 'rejected',
+        'is_active' => false,
+        'rejection_reason' => 'Data NISN belum sesuai dengan data sekolah.',
+    ]);
+
     $this->post(route('login.store'), [
         'login' => $pendingMember->email,
         'password' => 'password',
-    ])->assertSessionHasErrors('login');
+    ])->assertSessionHasErrors([
+        'login' => 'Akun Anda belum aktif. Silakan tunggu persetujuan dari petugas perpustakaan.',
+    ]);
 
     $this->post(route('login.store'), [
         'login' => $inactiveMember->email,
         'password' => 'password',
-    ])->assertSessionHasErrors('login');
+    ])->assertSessionHasErrors([
+        'login' => 'Akun ini sedang dinonaktifkan. Silakan hubungi petugas perpustakaan.',
+    ]);
+
+    $this->post(route('login.store'), [
+        'login' => $rejectedMember->email,
+        'password' => 'password',
+    ])->assertSessionHasErrors([
+        'login' => 'Pendaftaran akun Anda ditolak: Data NISN belum sesuai dengan data sekolah.',
+    ]);
 
     $this->assertGuest();
 });

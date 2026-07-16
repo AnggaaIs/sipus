@@ -51,6 +51,9 @@ test('halaman beranda menampilkan konten utama dan buku unggulan', function () {
         ->assertOk()
         ->assertSeeText('SIPUS')
         ->assertSeeText('Jelajahi Katalog')
+        ->assertSee('id="tentang"', false)
+        ->assertSeeText('Tentang SIPUS')
+        ->assertSeeText('Perpustakaan sekolah, lebih mudah diakses.')
         ->assertSeeText($latestBook->title)
         ->assertSeeText($mostBorrowedBook->title);
 });

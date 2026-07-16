@@ -42,6 +42,16 @@ class LoginRequest extends FormRequest
             ->first();
 
         if ($user instanceof User && Hash::check($this->string('password')->toString(), $user->password)) {
+            if ($user->account_status === 'rejected') {
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'login' => filled($user->rejection_reason)
+                        ? "Pendaftaran akun Anda ditolak: {$user->rejection_reason}"
+                        : 'Pendaftaran akun Anda ditolak. Silakan hubungi petugas perpustakaan untuk informasi lebih lanjut.',
+                ]);
+            }
+
             if (! $user->is_active) {
                 RateLimiter::hit($this->throttleKey());
 
@@ -54,9 +64,7 @@ class LoginRequest extends FormRequest
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
-                    'login' => $user->account_status === 'rejected' && filled($user->rejection_reason)
-                        ? $user->rejection_reason
-                        : 'Akun Anda belum aktif. Silakan tunggu persetujuan dari petugas perpustakaan.',
+                    'login' => 'Akun Anda belum aktif. Silakan tunggu persetujuan dari petugas perpustakaan.',
                 ]);
             }
         }

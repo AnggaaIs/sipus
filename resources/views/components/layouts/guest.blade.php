@@ -9,7 +9,6 @@
     'type' => 'website',
     'navbarOverlay' => false,
 
-    // Untuk sementara hanya tampilan
     'navigationLinks' => [
         ['label' => 'Katalog', 'href' => route('books.index'), 'active' => request()->routeIs('books.*')],
         ['label' => 'Kategori', 'href' => route('categories.index'), 'active' => request()->routeIs('categories.*')],
@@ -43,7 +42,6 @@
     <link rel="icon" type="image/png" href="{{ asset('images/sepang_sma_logo.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/sepang_sma_logo.png') }}">
 
-    {{-- Open Graph --}}
     <meta property="og:type" content="{{ $metaType }}">
     <meta property="og:site_name" content="{{ config('app.name', 'SIPUS') }}">
     <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -52,13 +50,11 @@
     <meta property="og:url" content="{{ $metaCanonical }}">
     <meta property="og:image" content="{{ $metaImage }}">
 
-    {{-- Twitter --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $title }}">
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $metaImage }}">
 
-    {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
