@@ -100,6 +100,7 @@ class BookForm
                     ->label('Sampul Buku')
                     ->image()
                     ->disk('covers')
+                    ->visibility('public')
                     ->directory(fn (Get $get) => Str::slug(Category::find($get('category_id'))?->name ?? 'uncategorized'))
                     ->getUploadedFileNameForStorageUsing(fn (Get $get, $file) => Str::slug($get('title') ?? 'cover').'.'.$file->getClientOriginalExtension())
                     ->default(null),

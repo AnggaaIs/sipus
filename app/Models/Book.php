@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -67,9 +68,7 @@ class Book extends Model
             return $this->cover;
         }
 
-        $baseUrl = rtrim((string) config('filesystems.disks.covers.url', asset('cover')), '/');
-
-        return $baseUrl.'/'.ltrim($this->cover, '/');
+        return Storage::disk('covers')->url($this->cover);
     }
 
     /**
