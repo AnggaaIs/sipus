@@ -30,6 +30,11 @@ class BookSeeder extends Seeder
                 'publisher_id' => $publishers->random()->getKey(),
             ])
             ->create()
+            ->each(function (Book $book): void {
+                $book->update([
+                    'available_copies' => $book->total_copies,
+                ]);
+            })
             ->each(function (Book $book) use ($authors): void {
                 $book->authors()->attach(
                     $authors
