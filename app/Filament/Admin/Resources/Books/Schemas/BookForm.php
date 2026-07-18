@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class BookForm
 {
@@ -102,7 +103,7 @@ class BookForm
                     ->disk('covers')
                     ->visibility('public')
                     ->directory(fn (Get $get) => Str::slug(Category::find($get('category_id'))?->name ?? 'uncategorized'))
-                    ->getUploadedFileNameForStorageUsing(fn (Get $get, $file) => Str::slug($get('title') ?? 'cover').'.'.$file->getClientOriginalExtension())
+                    ->getUploadedFileNameForStorageUsing(static fn (TemporaryUploadedFile $file): string => self::generateCoverFileName($file))
                     ->default(null),
                 TextInput::make('total_copies')
                     ->label('Total Stok')
@@ -117,5 +118,10 @@ class BookForm
                     ->minValue(0)
                     ->default(0),
             ]);
+    }
+
+    public static function generateCoverFileName(TemporaryUploadedFile $file): string
+    {
+        return Str::uuid()->toString().'.'.$file->guessExtension();
     }
 }
